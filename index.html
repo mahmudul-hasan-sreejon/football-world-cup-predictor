@@ -682,7 +682,7 @@ function autoPick(){
   thirds=new Set(thirdTeams.slice(0,8).map(x=>x.g));
   // knockout by higher rating, in order
   for(const k in picks)delete picks[k];
-  for(const m of ALLM){if(m.id===103)continue;const ta=resolve(m.a),tb=resolve(m.b);
+  for(const m of ALLM){const ta=resolve(m.a),tb=resolve(m.b);
     if(ta&&tb)picks[m.id]=(tb.rating>ta.rating?tb.id:ta.id);}
   render();toast('Filled by ranking — now edit anything you like');
 }
