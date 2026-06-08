@@ -42,9 +42,11 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   (5 sign-ups / 10 min, sliding window). Reads `UPSTASH_REDIS_REST_URL` and
   `UPSTASH_REDIS_REST_TOKEN`; when unset (e.g. local dev) it allows every request so the app runs
   without an Upstash account.
-- **`lib/subscribers.ts`** — Vercel Postgres data layer. `addSubscriber()` upserts on the unique
-  `email` (refreshing `champion`), and lazily runs `CREATE TABLE IF NOT EXISTS` on first call, so a
-  fresh DB needs no migration. Reads `POSTGRES_URL` from the env via `@vercel/postgres`.
+- **`lib/subscribers.ts`** — Vercel Postgres data layer. `addSubscriber()` inserts on the unique
+  `email` with `ON CONFLICT DO NOTHING RETURNING id`, returning `true` for a fresh sign-up and
+  `false` when the email already exists (the route turns `false` into a 409). It lazily runs
+  `CREATE TABLE IF NOT EXISTS` on first call, so a fresh DB needs no migration. Reads `POSTGRES_URL`
+  from the env via `@vercel/postgres`.
 - **`components/ui/`** — shadcn/ui primitives (button, card, dialog, tabs, sonner). `lib/utils.ts`
   holds the `cn()` helper (clsx + tailwind-merge); component config lives in `components.json`.
 - **`lib/site.ts`** — resolves the canonical `SITE_URL` once (env: `NEXT_PUBLIC_SITE_URL` →

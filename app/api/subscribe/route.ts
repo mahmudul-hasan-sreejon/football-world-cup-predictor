@@ -68,13 +68,23 @@ export async function POST(req: Request) {
       ? body.champion
       : null;
 
+  let inserted: boolean;
   try {
-    await addSubscriber(email, champion, TOURNAMENT);
+    inserted = await addSubscriber(email, champion, TOURNAMENT);
   } catch (err) {
     console.error("subscribe failed", err);
     return NextResponse.json(
       { error: "Could not save subscription" },
       { status: 500 },
+    );
+  }
+
+  // The email is already in the table — reject as a duplicate rather than
+  // silently re-subscribing.
+  if (!inserted) {
+    return NextResponse.json(
+      { error: "This email is already subscribed" },
+      { status: 409 },
     );
   }
 

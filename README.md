@@ -74,6 +74,8 @@ to bloat the `subscribers` table (see `app/api/subscribe/route.ts` and `lib/rate
 - **Email cap** — addresses over the RFC 5321 maximum of 254 characters are rejected.
 - **Honeypot** — a hidden form field that real users never fill; submissions that populate it get a
   silent fake-success and are not persisted.
+- **Unique emails** — the `email` column is `UNIQUE` and normalized (trimmed + lowercased), so the
+  same address can never create a second row; a repeat sign-up is rejected with a `409`.
 
 ## Project structure
 
@@ -88,7 +90,7 @@ to bloat the `subscribers` table (see `app/api/subscribe/route.ts` and `lib/rate
 - `app/opengraph-image.tsx` — dynamically generated 1200×630 social-share image (`next/og`)
 - `app/robots.ts` / `app/sitemap.ts` — generated `robots.txt` and `sitemap.xml`
 - `lib/bracket.ts` — tournament data + types + pure bracket logic (Annex C seeding, resolve/validate)
-- `lib/subscribers.ts` — Vercel Postgres data layer for newsletter sign-ups (upsert + table bootstrap)
+- `lib/subscribers.ts` — Vercel Postgres data layer for newsletter sign-ups (unique-email insert + table bootstrap)
 - `lib/site.ts` — resolves the canonical site URL (shared by layout, robots, and sitemap)
 - `lib/utils.ts` — `cn()` class-name helper (clsx + tailwind-merge)
 - `components/ui/` — shadcn/ui primitives (button, card, dialog, tabs, sonner toaster)

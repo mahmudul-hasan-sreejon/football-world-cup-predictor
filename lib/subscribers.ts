@@ -38,19 +38,22 @@ function ensureTable() {
   return ensured;
 }
 
-// Upsert a subscriber. Re-subscribing with the same email refreshes their
-// last predicted champion rather than erroring on the unique constraint.
+// Insert a subscriber. The `email` column is UNIQUE, so a repeat sign-up can't
+// create a duplicate row. `ON CONFLICT DO NOTHING` makes that a no-op instead of
+// an error; the `RETURNING` row is present only when a new row was inserted, so
+// the boolean tells the caller whether this was a fresh sign-up (true) or an
+// already-subscribed email (false).
 export async function addSubscriber(
   email: string,
   champion: string | null,
   tournament: string,
-): Promise<void> {
+): Promise<boolean> {
   await ensureTable();
-  await sql`
+  const { rows } = await sql`
     INSERT INTO subscribers (email, champion, tournament)
     VALUES (${email}, ${champion}, ${tournament})
-    ON CONFLICT (email) DO UPDATE SET
-      champion = EXCLUDED.champion,
-      tournament = EXCLUDED.tournament
+    ON CONFLICT (email) DO NOTHING
+    RETURNING id
   `;
+  return rows.length > 0;
 }
