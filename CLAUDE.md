@@ -32,6 +32,12 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   theme script. `<html>`/`<body>` use `suppressHydrationWarning` because that script mutates the
   class before hydration.
 - **`app/globals.css`** — global styles; theming is driven by a `light` class on `<html>`.
+- **`lib/site.ts`** — resolves the canonical `SITE_URL` once (env: `NEXT_PUBLIC_SITE_URL` →
+  `VERCEL_PROJECT_PRODUCTION_URL` → `VERCEL_URL` → `localhost`). Imported by `layout.tsx`,
+  `robots.ts`, and `sitemap.ts` — change the resolution logic here, not in those consumers.
+- **File-based metadata** — `app/icon.svg` (favicon), `app/opengraph-image.tsx` (dynamic OG image
+  via `next/og`; auto-populates `og:image`/`twitter:image`, so don't also set them in `layout.tsx`),
+  `app/robots.ts`, and `app/sitemap.ts`. Next wires these into `<head>` / serves them by convention.
 
 ### Key invariants
 

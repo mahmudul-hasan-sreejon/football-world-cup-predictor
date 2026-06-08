@@ -34,21 +34,39 @@ The predictor walks through three stages:
 Picks live in memory only (no persistence) — use **Copy summary** to export your bracket as text.
 The theme preference is the one thing saved, in `localStorage` under `wc26-theme`.
 
+## Configuration
+
+The only environment variable is `NEXT_PUBLIC_SITE_URL` — the canonical site URL used for SEO
+metadata, `robots.txt`, and `sitemap.xml`. It's optional: on Vercel it's resolved automatically (see
+[Deployment](#deployment)), and locally it defaults to `http://localhost:3000/`. Copy the template
+to override it for local development:
+
+```bash
+cp .env.example .env.local
+```
+
+`.env.local` is gitignored; `.env.example` is the committed reference.
+
 ## Project structure
 
 - `app/layout.tsx` — root layout, SEO metadata, fonts, JSON-LD, no-flash theme script
 - `app/page.tsx` — static hero/footer, mounts the predictor
 - `app/predictor.tsx` — client component holding all interactive state and rendering
 - `app/globals.css` — global styles
+- `app/icon.svg` — favicon (served as `/icon.svg`)
+- `app/opengraph-image.tsx` — dynamically generated 1200×630 social-share image (`next/og`)
+- `app/robots.ts` / `app/sitemap.ts` — generated `robots.txt` and `sitemap.xml`
 - `lib/bracket.ts` — tournament data + types + pure bracket logic (Annex C seeding, resolve/validate)
+- `lib/site.ts` — resolves the canonical site URL (shared by layout, robots, and sitemap)
 
 ## Deployment
 
 ### Vercel (recommended)
 
 Push this repo to GitHub/GitLab/Bitbucket and import it at [vercel.com/new](https://vercel.com/new).
-Vercel auto-detects Next.js — no build settings needed. The canonical/OG URLs in `app/layout.tsx`
-fill in automatically from Vercel's `VERCEL_PROJECT_PRODUCTION_URL`.
+Vercel auto-detects Next.js — no build settings needed. The canonical URL (and the OG image,
+`robots.txt`, and `sitemap.xml` derived from it) fills in automatically from Vercel's
+`VERCEL_PROJECT_PRODUCTION_URL`; see `lib/site.ts` for the resolution order.
 
 When you attach a custom domain, set an environment variable so SEO metadata uses it:
 
