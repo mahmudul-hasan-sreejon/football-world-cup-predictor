@@ -1,6 +1,11 @@
 'use client';
 
-import { useEffect, useRef, useState, type MouseEvent } from 'react';
+import { useEffect, useState, type MouseEvent } from 'react';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Card } from '@/components/ui/card';
+import { Toaster } from '@/components/ui/sonner';
 import {
   TEAMS,
   GROUPS,
@@ -30,9 +35,6 @@ export default function Predictor() {
   const [picks, setPicks] = useState<Record<number, string>>({}); // matchId -> teamId
 
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
-  const [toastMsg, setToastMsg] = useState('');
-  const [toastOn, setToastOn] = useState(false);
-  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Sync theme label from what the no-flash script already applied.
   useEffect(() => {
@@ -56,10 +58,7 @@ export default function Predictor() {
   }
 
   function showToast(m: string) {
-    setToastMsg(m);
-    setToastOn(true);
-    clearTimeout(toastTimer.current);
-    toastTimer.current = setTimeout(() => setToastOn(false), 2200);
+    toast(m, { duration: 2200 });
   }
 
   function go(s: string) {
@@ -279,37 +278,38 @@ export default function Predictor() {
 
   return (
     <>
+      <Tabs value={stage} onValueChange={go}>
       <nav className="bar">
-        <div className="tabs">
+        <TabsList className="tabs">
           {tabs.map((t) => (
-            <button
+            <TabsTrigger
               key={t.k}
+              value={t.k}
               className={`tab${stage === t.k ? ' active' : ''}${t.done ? ' done' : ''}`}
-              onClick={() => go(t.k)}
             >
               <span className="n">{t.done ? '✓' : t.num}</span>
               <span className="lbl">{t.label}</span>
-            </button>
+            </TabsTrigger>
           ))}
-        </div>
+        </TabsList>
         <div className="actions">
-          <button className="btn mag sm" onClick={autoPick}>
+          <Button variant="mag" size="sm" onClick={autoPick}>
             ⚡ Auto-pick by ranking
-          </button>
-          <button className="btn ghost sm" onClick={copySummary}>
+          </Button>
+          <Button variant="ghost" size="sm" onClick={copySummary}>
             Copy summary
-          </button>
-          <button className="btn ghost sm" onClick={resetAll}>
+          </Button>
+          <Button variant="ghost" size="sm" onClick={resetAll}>
             Reset
-          </button>
-          <button className="btn ghost sm" onClick={toggleTheme}>
+          </Button>
+          <Button variant="ghost" size="sm" onClick={toggleTheme}>
             {themeLabel}
-          </button>
+          </Button>
         </div>
       </nav>
 
       {/* GROUPS */}
-      <section className={`stage${stage === 'groups' ? ' show' : ''}`}>
+      <TabsContent value="groups" className="stage show">
         <div className="stage-head">
           <div>
             <h2>Group Stage</h2>
@@ -369,10 +369,10 @@ export default function Predictor() {
             );
           })}
         </div>
-      </section>
+      </TabsContent>
 
       {/* THIRDS */}
-      <section className={`stage${stage === 'thirds' ? ' show' : ''}`}>
+      <TabsContent value="thirds" className="stage show">
         <div className="stage-head">
           <div>
             <h2>Best Third-Placed Teams</h2>
@@ -387,16 +387,16 @@ export default function Predictor() {
           </div>
         </div>
         {!groupsComplete ? (
-          <div className="lock">
+          <Card className="lock">
             <h3>Rank your groups first</h3>
             <p>
               You&apos;ve ranked {done} of 12 groups. Finish the group stage to reveal the twelve
               third-placed teams.
             </p>
-            <button className="btn mag" onClick={() => go('groups')}>
+            <Button variant="mag" onClick={() => go('groups')}>
               ← Back to groups
-            </button>
-          </div>
+            </Button>
+          </Card>
         ) : (
           (() => {
             const full = thirds.size >= 8;
@@ -427,24 +427,25 @@ export default function Predictor() {
                     <span>{thirds.size}</span>
                     <span className="of"> / 8 selected</span>
                   </div>
-                  <button
+                  <Button
                     id="toko"
-                    className={`btn mag${full ? '' : ' ghost'}`}
+                    variant="mag"
+                    className={full ? undefined : 'ghost'}
                     disabled={!full}
                     style={full ? undefined : { opacity: 0.5 }}
                     onClick={full ? () => go('ko') : undefined}
                   >
                     Seed the bracket →
-                  </button>
+                  </Button>
                 </div>
               </>
             );
           })()
         )}
-      </section>
+      </TabsContent>
 
       {/* KNOCKOUT */}
-      <section className={`stage${stage === 'ko' ? ' show' : ''}`}>
+      <TabsContent value="ko" className="stage show">
         <div className="stage-head">
           <div>
             <h2>Knockout Bracket</h2>
@@ -475,16 +476,16 @@ export default function Predictor() {
         </div>
 
         {thirds.size !== 8 ? (
-          <div className="lock">
+          <Card className="lock">
             <h3>Bracket not seeded yet</h3>
             <p>
               Rank all 12 groups and select your 8 best third-placed teams, then the Round of 32
               seeds itself.
             </p>
-            <button className="btn mag" onClick={() => go(groupsComplete ? 'thirds' : 'groups')}>
+            <Button variant="mag" onClick={() => go(groupsComplete ? 'thirds' : 'groups')}>
               Go to Best Thirds →
-            </button>
-          </div>
+            </Button>
+          </Card>
         ) : (
           <>
             <p className="scrollhint">↔ scroll to see all rounds</p>
@@ -522,9 +523,10 @@ export default function Predictor() {
             </div>
           </>
         )}
-      </section>
+      </TabsContent>
 
-      <div className={`toast${toastOn ? ' show' : ''}`}>{toastMsg}</div>
+      </Tabs>
+      <Toaster theme={theme} />
     </>
   );
 }

@@ -1,3 +1,10 @@
+/* Tailwind (for shadcn/ui primitives). We import only the theme + utilities
+   layers and deliberately skip Tailwind's preflight/base reset so the bespoke
+   liquid-glass design and the resets below stay authoritative. */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
 :root{
   --bg:#06100f; --bg2:#0a1d1a; --panel:rgba(255,255,255,.045); --panel2:rgba(255,255,255,.07);
   --line:rgba(255,255,255,.11); --line2:rgba(255,255,255,.2);
