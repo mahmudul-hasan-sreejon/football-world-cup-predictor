@@ -60,7 +60,7 @@ export function fireConfetti() {
     });
   }
 
-  const GRAVITY = 0.4;
+  const GRAVITY = 0.75;
   const DRAG = 0.992;
   const MAX_FRAMES = 220; // ~3.6s at 60fps
   let frame = 0;
