@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, type MouseEvent } from 'react';
+import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -27,6 +27,7 @@ import {
   placeholder,
 } from '@/lib/bracket';
 import type { Match } from '@/lib/bracket';
+import { fireConfetti } from './confetti';
 
 export default function Predictor() {
   const [stage, setStage] = useState<string>('groups');
@@ -241,6 +242,15 @@ export default function Predictor() {
   const done = groupsDone(order);
   const groupsComplete = allGroups(order);
   const champ = champion(state);
+
+  // Celebrate when a champion is newly crowned (or changed to a different team).
+  const prevChamp = useRef<string | null>(null);
+  useEffect(() => {
+    const id = champ?.id ?? null;
+    if (id && id !== prevChamp.current) fireConfetti();
+    prevChamp.current = id;
+  }, [champ?.id]);
+
   const tabs = [
     { k: 'groups', num: '1', label: 'Groups', done: groupsComplete },
     { k: 'thirds', num: '2', label: 'Best Thirds', done: thirds.size === 8 },
