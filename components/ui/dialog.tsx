@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import * as DialogPrimitive from '@radix-ui/react-dialog';
+import * as React from "react";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 /**
  * Minimal Radix-backed modal, styled to the project's design system via the
@@ -18,7 +18,11 @@ const DialogContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <DialogPrimitive.Portal>
     <DialogPrimitive.Overlay className="modal-overlay" />
-    <DialogPrimitive.Content ref={ref} className={cn('modal', className)} {...props}>
+    <DialogPrimitive.Content
+      ref={ref}
+      className={cn("modal", className)}
+      {...props}
+    >
       {children}
       <DialogPrimitive.Close className="modal-x" aria-label="Close">
         ×
@@ -26,7 +30,7 @@ const DialogContent = React.forwardRef<
     </DialogPrimitive.Content>
   </DialogPrimitive.Portal>
 ));
-DialogContent.displayName = 'DialogContent';
+DialogContent.displayName = "DialogContent";
 
 const DialogTitle = DialogPrimitive.Title;
 const DialogDescription = DialogPrimitive.Description;

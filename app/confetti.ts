@@ -1,7 +1,14 @@
 // Lightweight canvas confetti burst — no dependencies.
 // Client-only: uses window/document/canvas. Self-cleans when the animation ends.
 
-const COLORS = ['#f6c945', '#ff2d72', '#3bc7ff', '#48e08a', '#ffffff', '#ff8a3d'];
+const COLORS = [
+  "#f6c945",
+  "#ff2d72",
+  "#3bc7ff",
+  "#48e08a",
+  "#ffffff",
+  "#ff8a3d",
+];
 
 type Particle = {
   x: number;
@@ -16,15 +23,15 @@ type Particle = {
 };
 
 export function fireConfetti() {
-  if (typeof window === 'undefined') return;
+  if (typeof window === "undefined") return;
   // Respect users who opt out of motion.
-  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+  if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
 
-  const canvas = document.createElement('canvas');
-  canvas.setAttribute('aria-hidden', 'true');
+  const canvas = document.createElement("canvas");
+  canvas.setAttribute("aria-hidden", "true");
   canvas.style.cssText =
-    'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999';
-  const ctx = canvas.getContext('2d');
+    "position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999";
+  const ctx = canvas.getContext("2d");
   if (!ctx) return;
   document.body.appendChild(canvas);
 

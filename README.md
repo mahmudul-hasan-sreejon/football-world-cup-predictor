@@ -31,19 +31,28 @@ The predictor walks through three stages:
 3. **Knockout** — a seeded single-elimination bracket from the Round of 32 to the Final. Pick a
    winner in each tie; changing an earlier pick automatically invalidates the rounds after it.
 
-Picks live in memory only (no persistence) — use **Copy summary** to export your bracket as text.
-The theme preference is the one thing saved, in `localStorage` under `wc26-theme`.
+Crowning a champion fires a confetti burst (skipped for users who prefer reduced motion) and opens a
+modal to optionally subscribe with an email — the only thing saved server-side, in Vercel Postgres
+(see [Configuration](#configuration)).
+
+Your bracket picks live in memory only (no persistence) — use **Copy summary** to export them as
+text. The theme preference is saved client-side, in `localStorage` under `wc26-theme`.
 
 ## Configuration
 
-The only environment variable is `NEXT_PUBLIC_SITE_URL` — the canonical site URL used for SEO
-metadata, `robots.txt`, and `sitemap.xml`. It's optional: on Vercel it's resolved automatically (see
-[Deployment](#deployment)), and locally it defaults to `http://localhost:3000/`. Copy the template
-to override it for local development:
+Both environment variables are optional. Copy the template and adjust as needed:
 
 ```bash
 cp .env.example .env.local
 ```
+
+- `NEXT_PUBLIC_SITE_URL` — the canonical site URL used for SEO metadata, `robots.txt`, and
+  `sitemap.xml`. On Vercel it's resolved automatically (see [Deployment](#deployment)); locally it
+  defaults to `http://localhost:3000/`.
+- `POSTGRES_URL` — Vercel Postgres connection string used by the `/api/subscribe` route to store
+  newsletter sign-ups. On Vercel it's injected automatically when you attach a Postgres store; set it
+  locally only to test subscriptions. The `subscribers` table is created on first use, so no
+  migration step is needed.
 
 `.env.local` is gitignored; `.env.example` is the committed reference.
 
@@ -52,12 +61,17 @@ cp .env.example .env.local
 - `app/layout.tsx` — root layout, SEO metadata, fonts, JSON-LD, no-flash theme script
 - `app/page.tsx` — static hero/footer, mounts the predictor
 - `app/predictor.tsx` — client component holding all interactive state and rendering
+- `app/confetti.ts` — dependency-free canvas confetti burst for the champion celebration
+- `app/api/subscribe/route.ts` — POST endpoint that validates an email and upserts a subscriber
 - `app/globals.css` — global styles
 - `app/icon.svg` — favicon (served as `/icon.svg`)
 - `app/opengraph-image.tsx` — dynamically generated 1200×630 social-share image (`next/og`)
 - `app/robots.ts` / `app/sitemap.ts` — generated `robots.txt` and `sitemap.xml`
 - `lib/bracket.ts` — tournament data + types + pure bracket logic (Annex C seeding, resolve/validate)
+- `lib/subscribers.ts` — Vercel Postgres data layer for newsletter sign-ups (upsert + table bootstrap)
 - `lib/site.ts` — resolves the canonical site URL (shared by layout, robots, and sitemap)
+- `lib/utils.ts` — `cn()` class-name helper (clsx + tailwind-merge)
+- `components/ui/` — shadcn/ui primitives (button, card, dialog, tabs, sonner toaster)
 
 ## Deployment
 

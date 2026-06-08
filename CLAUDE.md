@@ -32,6 +32,15 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   theme script. `<html>`/`<body>` use `suppressHydrationWarning` because that script mutates the
   class before hydration.
 - **`app/globals.css`** — global styles; theming is driven by a `light` class on `<html>`.
+- **`app/confetti.ts`** — dependency-free canvas confetti (`fireConfetti()`); client-only, self-cleans
+  the canvas, and no-ops under `prefers-reduced-motion`. Fired from `predictor.tsx` on champion.
+- **`app/api/subscribe/route.ts`** — `POST` handler: validates the email, then calls
+  `addSubscriber()`. Returns `{ ok: true }` or `{ error }` with a 400/500 status.
+- **`lib/subscribers.ts`** — Vercel Postgres data layer. `addSubscriber()` upserts on the unique
+  `email` (refreshing `champion`), and lazily runs `CREATE TABLE IF NOT EXISTS` on first call, so a
+  fresh DB needs no migration. Reads `POSTGRES_URL` from the env via `@vercel/postgres`.
+- **`components/ui/`** — shadcn/ui primitives (button, card, dialog, tabs, sonner). `lib/utils.ts`
+  holds the `cn()` helper (clsx + tailwind-merge); component config lives in `components.json`.
 - **`lib/site.ts`** — resolves the canonical `SITE_URL` once (env: `NEXT_PUBLIC_SITE_URL` →
   `VERCEL_PROJECT_PRODUCTION_URL` → `VERCEL_URL` → `localhost`). Imported by `layout.tsx`,
   `robots.ts`, and `sitemap.ts` — change the resolution logic here, not in those consumers.
@@ -51,4 +60,5 @@ There are no automated tests; verify changes by running `npm run build` (type ch
 ## Conventions
 
 ### Git Commits
+
 Do not include `Co-Authored-By` lines in commit messages.

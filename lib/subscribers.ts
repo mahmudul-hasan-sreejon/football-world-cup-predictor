@@ -1,4 +1,4 @@
-import { sql } from '@vercel/postgres';
+import { sql } from "@vercel/postgres";
 
 // Data model for newsletter sign-ups captured after a user crowns a champion.
 // Persisted in Vercel Postgres; the `sql` tag reads POSTGRES_URL from the env.
@@ -26,7 +26,10 @@ function ensureTable() {
 
 // Upsert a subscriber. Re-subscribing with the same email refreshes their
 // last predicted champion rather than erroring on the unique constraint.
-export async function addSubscriber(email: string, champion: string | null): Promise<void> {
+export async function addSubscriber(
+  email: string,
+  champion: string | null,
+): Promise<void> {
   await ensureTable();
   await sql`
     INSERT INTO subscribers (email, champion)
