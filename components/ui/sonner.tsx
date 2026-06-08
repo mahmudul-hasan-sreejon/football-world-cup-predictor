@@ -15,6 +15,9 @@ export function Toaster({ theme = "dark", ...props }: ToasterProps) {
     <Sonner
       theme={theme}
       position="bottom-center"
+      // Sit above the sign-up modal (z-index 51) so error toasts triggered from
+      // inside the dialog stay visible rather than rendering behind it.
+      style={{ zIndex: 100 }}
       toastOptions={{
         style: {
           background: light ? "#0d1c18" : "#fff",

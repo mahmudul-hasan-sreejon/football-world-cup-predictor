@@ -39,6 +39,7 @@ import {
   type FormEvent,
   type MouseEvent,
 } from "react";
+import { createPortal } from "react-dom";
 import { toast } from "sonner";
 import { fireConfetti } from "./confetti";
 
@@ -49,6 +50,8 @@ export default function Predictor() {
   const [picks, setPicks] = useState<Record<number, string>>({}); // matchId -> teamId
 
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  // Gate the body-level toast portal until after mount (no `document` on the server).
+  const [mounted, setMounted] = useState(false);
 
   // Newsletter sign-up shown once a champion is crowned.
   const [email, setEmail] = useState("");
@@ -60,6 +63,7 @@ export default function Predictor() {
 
   // Sync theme label from what the no-flash script already applied.
   useEffect(() => {
+    setMounted(true);
     try {
       setTheme(
         localStorage.getItem("wc26-theme") === "light" ? "light" : "dark",
@@ -706,7 +710,9 @@ export default function Predictor() {
         </DialogContent>
       </Dialog>
 
-      <Toaster theme={theme} />
+      {/* Portal to <body> so the toaster escapes `.wrap`'s stacking context and
+          its z-index can sit above the sign-up modal (which Radix portals to body). */}
+      {mounted && createPortal(<Toaster theme={theme} />, document.body)}
     </>
   );
 }
