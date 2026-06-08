@@ -1,5 +1,36 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Toaster } from "@/components/ui/sonner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { Match } from "@/lib/bracket";
+import {
+  ALLM,
+  BYID,
+  FINAL,
+  GROUPS,
+  MById,
+  QF,
+  R16,
+  R32,
+  ROUNDS,
+  SF,
+  TEAMS,
+  THIRDM,
+  allGroups,
+  champion,
+  groupsDone,
+  placeholder,
+  resolve,
+  validatePicks,
+} from "@/lib/bracket";
 import {
   useEffect,
   useRef,
@@ -9,37 +40,6 @@ import {
   type MouseEvent,
 } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Card } from "@/components/ui/card";
-import { Toaster } from "@/components/ui/sonner";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import {
-  TEAMS,
-  GROUPS,
-  BYID,
-  ALLM,
-  MById,
-  ROUNDS,
-  R32,
-  R16,
-  QF,
-  SF,
-  FINAL,
-  THIRDM,
-  resolve,
-  validatePicks,
-  groupsDone,
-  allGroups,
-  champion,
-  placeholder,
-} from "@/lib/bracket";
-import type { Match } from "@/lib/bracket";
 import { fireConfetti } from "./confetti";
 
 export default function Predictor() {

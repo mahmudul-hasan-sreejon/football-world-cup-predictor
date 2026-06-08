@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
+import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -35,4 +35,4 @@ DialogContent.displayName = "DialogContent";
 const DialogTitle = DialogPrimitive.Title;
 const DialogDescription = DialogPrimitive.Description;
 
-export { Dialog, DialogContent, DialogTitle, DialogDescription };
+export { Dialog, DialogContent, DialogDescription, DialogTitle };

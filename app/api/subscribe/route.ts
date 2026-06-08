@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import { addSubscriber } from "@/lib/subscribers";
+import { NextResponse } from "next/server";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
