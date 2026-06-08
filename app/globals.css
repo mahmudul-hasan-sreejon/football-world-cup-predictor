@@ -173,6 +173,10 @@ h1 .y{color:var(--gold)} h1 .p{color:var(--mag)}
 /* misc */
 .note{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px;line-height:1.6}
 .note b{color:var(--muted2)}
+.footer{margin-top:30px;padding:22px 0 36px;border-top:1px solid var(--line);text-align:center}
+.foot-brand{margin:0;font-family:'Sometype Mono',monospace;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
+.foot-brand .y{color:var(--gold)} .foot-brand .p{color:var(--mag)}
+.foot-meta{margin:8px 0 0;font-size:12px;color:var(--muted);line-height:1.6}
 .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);z-index:60;
   background:#fff;color:#06100f;font-weight:700;padding:12px 18px;border-radius:12px;box-shadow:var(--sh);
   opacity:0;pointer-events:none;transition:.25s;font-size:14px}

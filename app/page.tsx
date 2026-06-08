@@ -32,6 +32,31 @@ export default function Home() {
         approximations to give you an editable starting point — not predictions. Your picks reset on
         reload; use <b>Copy summary</b> to save them.
       </p>
+
+      <footer className="footer">
+        <p className="foot-brand">
+          World Cup <span className="y">2026</span> <span className="p">Predictor</span>
+        </p>
+        <p className="foot-meta">
+          An unofficial fan project · Not affiliated with FIFA · Team and tournament data are
+          publicly available facts.
+        </p>
+        <p className="foot-meta">
+          © 2026 ·{' '}
+          <a
+            href="https://github.com/mahmudul-hasan-sreejon"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            mahmudul-hasan-sreejon
+          </a>{' '}
+          · Built with{' '}
+          <a href="https://nextjs.org" target="_blank" rel="noopener noreferrer">
+            Next.js
+          </a>{' '}
+          and ❤️
+        </p>
+      </footer>
     </div>
   );
 }
