@@ -82,6 +82,11 @@ Vercel auto-detects Next.js — no build settings needed. The canonical URL (and
 `robots.txt`, and `sitemap.xml` derived from it) fills in automatically from Vercel's
 `VERCEL_PROJECT_PRODUCTION_URL`; see `lib/site.ts` for the resolution order.
 
+To enable the newsletter sign-up, attach a Postgres store under the project's **Storage** tab.
+Vercel injects `POSTGRES_URL` automatically and the `subscribers` table is created on first use, so
+no migration step is needed. Skip this and the app still works — only the `/api/subscribe` route
+errors on submit.
+
 When you attach a custom domain, set an environment variable so SEO metadata uses it:
 
 ```bash
@@ -92,6 +97,7 @@ NEXT_PUBLIC_SITE_URL=https://your-domain.com/
 
 ### Other hosts
 
-`next build` produces a fully static site (every route prerenders), so it can also be hosted on any
-static or Node host. Outside Vercel, set `NEXT_PUBLIC_SITE_URL` to your real URL; it defaults to
-`http://localhost:3000/`.
+Every page route prerenders to static HTML, but the `/api/subscribe` route is a server-rendered
+function, so the app needs a Node host (not a static-only one) for the newsletter to work. Outside
+Vercel, set `NEXT_PUBLIC_SITE_URL` to your real URL (it defaults to `http://localhost:3000/`) and
+provide `POSTGRES_URL` yourself if you want sign-ups.
