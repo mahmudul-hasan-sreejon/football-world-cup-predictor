@@ -1,11 +1,17 @@
 'use client';
 
-import { useEffect, useRef, useState, type MouseEvent } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent, type MouseEvent } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { Toaster } from '@/components/ui/sonner';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import {
   TEAMS,
   GROUPS,
@@ -37,6 +43,12 @@ export default function Predictor() {
 
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
+  // Newsletter sign-up shown once a champion is crowned.
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [subOpen, setSubOpen] = useState(false);
+
   // Sync theme label from what the no-flash script already applied.
   useEffect(() => {
     try {
@@ -60,6 +72,37 @@ export default function Predictor() {
 
   function showToast(m: string) {
     toast(m, { duration: 2200 });
+  }
+
+  function onEmail(e: ChangeEvent<HTMLInputElement>) {
+    setEmail(e.target.value);
+  }
+  async function subscribe(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const v = email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) {
+      showToast('Enter a valid email address');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: v, champion: champ?.name ?? null }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        showToast(data?.error || 'Subscription failed — try again');
+        return;
+      }
+      setSubscribed(true);
+      showToast('Subscribed — we’ll keep you posted');
+    } catch {
+      showToast('Network error — try again');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   function go(s: string) {
@@ -247,9 +290,12 @@ export default function Predictor() {
   const prevChamp = useRef<string | null>(null);
   useEffect(() => {
     const id = champ?.id ?? null;
-    if (id && id !== prevChamp.current) fireConfetti();
+    if (id && id !== prevChamp.current) {
+      fireConfetti();
+      if (!subscribed) setSubOpen(true); // open the sign-up modal on a fresh champion
+    }
     prevChamp.current = id;
-  }, [champ?.id]);
+  }, [champ?.id, subscribed]);
 
   const tabs = [
     { k: 'groups', num: '1', label: 'Groups', done: groupsComplete },
@@ -474,13 +520,21 @@ export default function Predictor() {
           {champ && (
             <div className="champ-in">
               <span className="tro">🏆</span>
-              <div>
+              <div className="champ-meta">
                 <div className="lbl">Your predicted world champion</div>
                 <div className="who">
                   <span>{champ.flag}</span>
                   {champ.name}
                 </div>
               </div>
+              <Button
+                variant={subscribed ? 'ghost' : 'mag'}
+                size="sm"
+                className="champ-sub"
+                onClick={() => setSubOpen(true)}
+              >
+                {subscribed ? '✓ Subscribed' : '🔔 Get updates'}
+              </Button>
             </div>
           )}
         </div>
@@ -536,6 +590,50 @@ export default function Predictor() {
       </TabsContent>
 
       </Tabs>
+
+      <Dialog open={subOpen} onOpenChange={setSubOpen}>
+        <DialogContent className="sub-modal">
+          {subscribed ? (
+            <div className="sub-done">
+              <span className="sub-check">✓</span>
+              <div>
+                <DialogTitle className="sub-title">You&apos;re on the list</DialogTitle>
+                <DialogDescription>
+                  We&apos;ll email you bracket updates and results as the tournament unfolds.
+                </DialogDescription>
+              </div>
+            </div>
+          ) : (
+            <form className="sub-form" onSubmit={subscribe}>
+              <span className="sub-tro">🏆</span>
+              <div className="sub-copy">
+                <DialogTitle className="sub-title">Get updates on your prediction</DialogTitle>
+                <DialogDescription>
+                  You picked <b>{champ?.name}</b> to lift the trophy. Drop your email and we&apos;ll
+                  let you know how the bracket plays out.
+                </DialogDescription>
+              </div>
+              <div className="sub-row">
+                <input
+                  type="email"
+                  className="sub-input"
+                  placeholder="you@example.com"
+                  aria-label="Email address"
+                  value={email}
+                  onChange={onEmail}
+                  disabled={submitting}
+                  autoFocus
+                  required
+                />
+                <Button type="submit" variant="mag" disabled={submitting}>
+                  {submitting ? 'Subscribing…' : 'Subscribe'}
+                </Button>
+              </div>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
+
       <Toaster theme={theme} />
     </>
   );
