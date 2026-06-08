@@ -1,9 +1,7 @@
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
-
-const SITE_URL = 'https://example.com/';
-const OG_IMAGE = 'https://example.com/og-image.png';
+import { SITE_URL } from '@/lib/site';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -19,14 +17,14 @@ export const metadata: Metadata = {
       "Rank all 12 groups, pick the 8 best third-placed teams, and click your way to a champion with FIFA's official Annex C seeding.",
     url: SITE_URL,
     siteName: 'World Cup 2026 Predictor',
-    images: [{ url: OG_IMAGE }],
+    // og:image is supplied automatically by app/opengraph-image.tsx
   },
   twitter: {
     card: 'summary_large_image',
     title: 'World Cup 2026 Bracket Predictor',
     description:
       'Rank all 12 groups, pick the 8 best third-placed teams, and click your way to a champion.',
-    images: [OG_IMAGE],
+    // twitter:image falls back to the generated og:image
   },
 };
 

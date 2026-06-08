@@ -44,6 +44,22 @@ The theme preference is the one thing saved, in `localStorage` under `wc26-theme
 
 ## Deployment
 
-`next build` produces a fully static site (every route prerenders), so it can be hosted on any
-static or Node host. Before deploying, set the real site URL in `app/layout.tsx` (`SITE_URL` /
-`OG_IMAGE`) — these currently point at `https://example.com/`.
+### Vercel (recommended)
+
+Push this repo to GitHub/GitLab/Bitbucket and import it at [vercel.com/new](https://vercel.com/new).
+Vercel auto-detects Next.js — no build settings needed. The canonical/OG URLs in `app/layout.tsx`
+fill in automatically from Vercel's `VERCEL_PROJECT_PRODUCTION_URL`.
+
+When you attach a custom domain, set an environment variable so SEO metadata uses it:
+
+```bash
+NEXT_PUBLIC_SITE_URL=https://your-domain.com/
+```
+
+(Note the trailing slash.) Or deploy from the CLI with `npx vercel` / `npx vercel --prod`.
+
+### Other hosts
+
+`next build` produces a fully static site (every route prerenders), so it can also be hosted on any
+static or Node host. Outside Vercel, set `NEXT_PUBLIC_SITE_URL` to your real URL; it defaults to
+`http://localhost:3000/`.
