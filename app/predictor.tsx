@@ -650,8 +650,8 @@ export default function Predictor() {
                   You&apos;re on the list
                 </DialogTitle>
                 <DialogDescription>
-                  We&apos;ll email you bracket updates and results as the
-                  tournament unfolds.
+                  Thanks for subscribing! We&apos;ll keep you posted about our
+                  World Cup coverage and updates.
                 </DialogDescription>
               </div>
             </div>
