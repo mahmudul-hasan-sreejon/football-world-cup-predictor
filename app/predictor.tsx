@@ -52,6 +52,8 @@ export default function Predictor() {
 
   // Newsletter sign-up shown once a champion is crowned.
   const [email, setEmail] = useState("");
+  // Honeypot: hidden from real users; a non-empty value flags a bot server-side.
+  const hpRef = useRef<HTMLInputElement>(null);
   const [subscribed, setSubscribed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [subOpen, setSubOpen] = useState(false);
@@ -102,7 +104,11 @@ export default function Predictor() {
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: v, champion: champ?.name ?? null }),
+        body: JSON.stringify({
+          email: v,
+          champion: champ?.name ?? null,
+          website: hpRef.current?.value ?? "",
+        }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => null);
@@ -651,6 +657,23 @@ export default function Predictor() {
             </div>
           ) : (
             <form className="sub-form" onSubmit={subscribe}>
+              {/* Honeypot — off-screen and hidden from assistive tech; bots that
+                  blindly fill inputs trip it, real users never see it. */}
+              <input
+                ref={hpRef}
+                type="text"
+                name="website"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  left: "-9999px",
+                  width: 1,
+                  height: 1,
+                  opacity: 0,
+                }}
+              />
               <span className="sub-tro">🏆</span>
               <div className="sub-copy">
                 <DialogTitle className="sub-title">

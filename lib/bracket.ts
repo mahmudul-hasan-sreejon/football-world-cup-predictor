@@ -623,6 +623,13 @@ GROUPS.forEach((g) =>
   }),
 );
 
+// Every valid team name, used to validate the `champion` accepted by the
+// subscribe API so an untrusted client can only store one of these bounded
+// values (or null) rather than arbitrary free text.
+export const TEAM_NAMES: ReadonlySet<string> = new Set(
+  GROUPS.flatMap((g) => TEAMS[g].map((t) => t[0])),
+);
+
 // ---- Bracket structure (official) ----
 export const R32: Match[] = [
   { id: 73, a: { t: "ru", g: "A" }, b: { t: "ru", g: "B" } },

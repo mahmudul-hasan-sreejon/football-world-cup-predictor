@@ -34,8 +34,14 @@ There are no automated tests; verify changes by running `npm run build` (type ch
 - **`app/globals.css`** — global styles; theming is driven by a `light` class on `<html>`.
 - **`app/confetti.ts`** — dependency-free canvas confetti (`fireConfetti()`); client-only, self-cleans
   the canvas, and no-ops under `prefers-reduced-motion`. Fired from `predictor.tsx` on champion.
-- **`app/api/subscribe/route.ts`** — `POST` handler: validates the email, then calls
-  `addSubscriber()`. Returns `{ ok: true }` or `{ error }` with a 400/500 status.
+- **`app/api/subscribe/route.ts`** — `POST` handler and the abuse boundary for this public
+  endpoint. In order: rejects oversized bodies (413), rate-limits per IP (429), drops honeypot
+  hits (the hidden `website` field) as silent fake-success, caps/validates the email, and coerces
+  `champion` to a known `TEAM_NAMES` value or `null`. Only then calls `addSubscriber()`.
+- **`lib/rate-limit.ts`** — durable per-IP limiter (`allowSubscribe()`) backed by Upstash Redis
+  (5 sign-ups / 10 min, sliding window). Reads `UPSTASH_REDIS_REST_URL` and
+  `UPSTASH_REDIS_REST_TOKEN`; when unset (e.g. local dev) it allows every request so the app runs
+  without an Upstash account.
 - **`lib/subscribers.ts`** — Vercel Postgres data layer. `addSubscriber()` upserts on the unique
   `email` (refreshing `champion`), and lazily runs `CREATE TABLE IF NOT EXISTS` on first call, so a
   fresh DB needs no migration. Reads `POSTGRES_URL` from the env via `@vercel/postgres`.
