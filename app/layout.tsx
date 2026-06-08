@@ -5,23 +5,23 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "World Cup 2026 Bracket Predictor — Fill Your Knockout Bracket",
+  title: "FIFA World Cup 2026 Bracket Predictor — Fill Your Knockout Bracket",
   description:
     "Predict the 2026 FIFA World Cup. Rank all 12 groups, pick the 8 best third-placed teams, and build your knockout bracket from the Round of 32 to the Final using FIFA's official Annex C seeding.",
   robots: { index: true, follow: true },
   alternates: { canonical: SITE_URL },
   openGraph: {
     type: "website",
-    title: "World Cup 2026 Bracket Predictor",
+    title: "FIFA World Cup 2026 Bracket Predictor",
     description:
       "Rank all 12 groups, pick the 8 best third-placed teams, and click your way to a champion with FIFA's official Annex C seeding.",
     url: SITE_URL,
-    siteName: "World Cup 2026 Predictor",
+    siteName: "FIFA World Cup 2026 Predictor",
     // og:image is supplied automatically by app/opengraph-image.tsx
   },
   twitter: {
     card: "summary_large_image",
-    title: "World Cup 2026 Bracket Predictor",
+    title: "FIFA World Cup 2026 Bracket Predictor",
     description:
       "Rank all 12 groups, pick the 8 best third-placed teams, and click your way to a champion.",
     // twitter:image falls back to the generated og:image
@@ -38,7 +38,7 @@ export const viewport: Viewport = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  name: "World Cup 2026 Bracket Predictor",
+  name: "FIFA World Cup 2026 Bracket Predictor",
   description:
     "Interactive bracket predictor for the 2026 FIFA World Cup. Rank the 12 groups, choose the 8 best third-placed teams, and play out the knockout stage to the Final using FIFA's official Annex C seeding logic.",
   url: SITE_URL,

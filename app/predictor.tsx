@@ -207,7 +207,7 @@ export default function Predictor() {
     showToast("Cleared");
   }
   function copySummary() {
-    let s = "⚽ MY WORLD CUP 2026 BRACKET\n\nGROUP STAGE\n";
+    let s = "⚽ MY FIFA WORLD CUP 2026 BRACKET\n\nGROUP STAGE\n";
     GROUPS.forEach((g) => {
       const o = order[g] || [];
       s +=

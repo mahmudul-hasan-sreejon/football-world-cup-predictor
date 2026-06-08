@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 // Dynamically generated 1200x630 social-share image. Next.js wires this into
 // the page's Open Graph metadata automatically (Twitter falls back to og:image).
-export const alt = "World Cup 2026 Bracket Predictor";
+export const alt = "FIFA World Cup 2026 Bracket Predictor";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

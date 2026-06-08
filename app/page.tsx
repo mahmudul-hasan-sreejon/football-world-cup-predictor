@@ -6,7 +6,7 @@ export default function Home() {
       <header className="hero">
         <p className="kicker">USA · Canada · Mexico · Jun 11 – Jul 19</p>
         <h1>
-          World Cup <span className="y">2026</span>
+          FIFA World Cup <span className="y">2026</span>
           <br />
           <span className="p">Predictor</span>
         </h1>
@@ -39,7 +39,7 @@ export default function Home() {
 
       <footer className="footer">
         <p className="foot-brand">
-          World Cup <span className="y">2026</span>{" "}
+          FIFA World Cup <span className="y">2026</span>{" "}
           <span className="p">Predictor</span>
         </p>
         <p className="foot-meta">
