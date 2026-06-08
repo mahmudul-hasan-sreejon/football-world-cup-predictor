@@ -653,12 +653,10 @@ export default function Predictor() {
             <form className="sub-form" onSubmit={subscribe}>
               <span className="sub-tro">🏆</span>
               <div className="sub-copy">
-                <DialogTitle className="sub-title">
-                  Get updates on your prediction
-                </DialogTitle>
+                <DialogTitle className="sub-title">Get updates from us!</DialogTitle>
                 <DialogDescription>
-                  You picked <b>{champ?.name}</b> to lift the trophy. Drop your
-                  email and we&apos;ll let you know how the bracket plays out.
+                  You picked <b className="sub-champ">{champ?.name}</b> to lift the trophy. Drop your email and we&apos;ll
+                  let you know about the latest updates.
                 </DialogDescription>
               </div>
               <div className="sub-row">

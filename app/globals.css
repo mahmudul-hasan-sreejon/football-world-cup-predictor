@@ -823,6 +823,10 @@ h1 .p {
   letter-spacing: 0.04em;
   font-size: 21px;
 }
+.sub-champ {
+  text-transform: uppercase;
+  color: #ff2d72;
+}
 .sub-modal p,
 .sub-copy p {
   margin: 6px 0 0;
