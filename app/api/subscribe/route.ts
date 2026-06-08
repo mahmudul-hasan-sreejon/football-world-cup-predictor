@@ -1,4 +1,5 @@
 import { addSubscriber } from "@/lib/subscribers";
+import { TOURNAMENT } from "@/lib/site";
 import { NextResponse } from "next/server";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -26,7 +27,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    await addSubscriber(email, champion);
+    await addSubscriber(email, champion, TOURNAMENT);
   } catch (err) {
     console.error("subscribe failed", err);
     return NextResponse.json(

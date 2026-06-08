@@ -10,3 +10,9 @@ export const SITE_URL =
     : process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}/`
       : "http://localhost:3000/");
+
+// The tournament this predictor covers. Stored alongside each subscriber so the
+// table stays meaningful if the app is ever pointed at a future tournament.
+// Override via NEXT_PUBLIC_TOURNAMENT; defaults to the current edition.
+export const TOURNAMENT =
+  process.env.NEXT_PUBLIC_TOURNAMENT || "FIFA World Cup 2026";

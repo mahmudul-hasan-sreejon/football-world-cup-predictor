@@ -5,6 +5,7 @@ import { sql } from "@vercel/postgres";
 export type Subscriber = {
   email: string;
   champion: string | null;
+  tournament: string;
   createdAt: string;
 };
 
@@ -17,6 +18,7 @@ function ensureTable() {
         id         SERIAL PRIMARY KEY,
         email      TEXT NOT NULL UNIQUE,
         champion   TEXT,
+        tournament TEXT NOT NULL,
         created_at TIMESTAMPTZ NOT NULL DEFAULT now()
       )
     `.then(() => undefined);
@@ -29,11 +31,14 @@ function ensureTable() {
 export async function addSubscriber(
   email: string,
   champion: string | null,
+  tournament: string,
 ): Promise<void> {
   await ensureTable();
   await sql`
-    INSERT INTO subscribers (email, champion)
-    VALUES (${email}, ${champion})
-    ON CONFLICT (email) DO UPDATE SET champion = EXCLUDED.champion
+    INSERT INTO subscribers (email, champion, tournament)
+    VALUES (${email}, ${champion}, ${tournament})
+    ON CONFLICT (email) DO UPDATE SET
+      champion = EXCLUDED.champion,
+      tournament = EXCLUDED.tournament
   `;
 }
