@@ -11,7 +11,6 @@ import { cn } from '@/lib/utils';
  * scroll lock come from Radix).
  */
 const Dialog = DialogPrimitive.Root;
-const DialogClose = DialogPrimitive.Close;
 
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
@@ -32,4 +31,4 @@ DialogContent.displayName = 'DialogContent';
 const DialogTitle = DialogPrimitive.Title;
 const DialogDescription = DialogPrimitive.Description;
 
-export { Dialog, DialogClose, DialogContent, DialogTitle, DialogDescription };
+export { Dialog, DialogContent, DialogTitle, DialogDescription };
