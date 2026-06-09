@@ -183,7 +183,7 @@ export default function Predictor() {
     applyState(order, thirds, next);
   }
 
-  // ---- Auto / reset / copy ----
+  // ---- Auto / reset ----
   function autoPick() {
     const nextOrder: Record<string, string[]> = {};
     GROUPS.forEach((g) => {
@@ -216,57 +216,6 @@ export default function Predictor() {
     go("groups");
     showToast("Cleared");
   }
-  function copySummary() {
-    let s = "⚽ MY FIFA WORLD CUP 2026 BRACKET\n\nGROUP STAGE\n";
-    GROUPS.forEach((g) => {
-      const o = order[g] || [];
-      s +=
-        `Group ${g}: ` +
-        (o.length
-          ? o.map((id, i) => `${i + 1}.${BYID[id].name}`).join("  ")
-          : "—") +
-        "\n";
-    });
-    s +=
-      "\nBEST 3RD-PLACE QUALIFIERS\n" +
-      (thirds.size === 8
-        ? [...thirds]
-            .sort()
-            .map((g) => BYID[order[g][2]].name)
-            .join(", ")
-        : "(not chosen)") +
-      "\n";
-    s += "\nKNOCKOUT\n";
-    (
-      [
-        ["Round of 32", R32],
-        ["Round of 16", R16],
-        ["Quarter-finals", QF],
-        ["Semi-finals", SF],
-        ["3rd place", [THIRDM]],
-        ["Final", [FINAL]],
-      ] as [string, Match[]][]
-    ).forEach(([t, ms]) => {
-      const lines = ms
-        .map((m) => {
-          const ta = resolve(m.a, state),
-            tb = resolve(m.b, state),
-            p = picks[m.id];
-          if (!ta || !tb) return null;
-          const w = p ? BYID[p].name : "?";
-          return `  ${ta.name} v ${tb.name} → ${w}`;
-        })
-        .filter(Boolean);
-      if (lines.length) s += `\n${t}\n` + lines.join("\n") + "\n";
-    });
-    const c = champion(state);
-    if (c) s += `\n🏆 CHAMPION: ${c.name}\n`;
-    navigator.clipboard?.writeText(s).then(
-      () => showToast("Bracket copied to clipboard"),
-      () => showToast("Copy failed"),
-    );
-  }
-
   // ---- Theme ----
   function applyTheme(t: "dark" | "light") {
     document.documentElement.classList.toggle("light", t === "light");
@@ -390,9 +339,6 @@ export default function Predictor() {
           <div className="actions">
             <Button variant="mag" size="sm" onClick={autoPick}>
               ⚡ Auto-pick by ranking
-            </Button>
-            <Button variant="ghost" size="sm" onClick={copySummary}>
-              Copy summary
             </Button>
             <Button variant="ghost" size="sm" onClick={resetAll}>
               Reset

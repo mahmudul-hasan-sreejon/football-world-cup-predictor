@@ -33,8 +33,7 @@ export default function Home() {
         <br />
         <b>Ranking strengths</b> used only by the &quot;Auto-pick&quot; helper
         are rough approximations to give you an editable starting point — not
-        predictions. Your picks reset on reload; use <b>Copy summary</b> to save
-        them.
+        predictions. Your picks reset on reload.
       </p>
 
       <footer className="footer">
