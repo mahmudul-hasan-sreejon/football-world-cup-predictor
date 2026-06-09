@@ -1435,11 +1435,12 @@ h1 .p {
   }
   /* Same treatment for the live bar: drop the scroll clip so shadows render
      unclipped. Cards wrap instead of scrolling, so a large count can't
-     overflow the page. */
+     overflow the page. Keep vertical padding so the card shadows have room
+     above/below before the header and the section separator. */
   .livebar {
     overflow: visible;
     flex-wrap: wrap;
-    padding: 0;
+    padding: 12px 0 32px;
     row-gap: 24px;
   }
   .bracket {
