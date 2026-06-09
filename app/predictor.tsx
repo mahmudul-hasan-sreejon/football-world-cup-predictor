@@ -31,6 +31,7 @@ import {
   resolve,
   validatePicks,
 } from "@/lib/bracket";
+import { upcomingOrLive, statusLabel, type LiveMatch } from "@/lib/scores";
 import {
   useEffect,
   useRef,
@@ -42,6 +43,23 @@ import {
 import { createPortal } from "react-dom";
 import { toast } from "sonner";
 import { fireConfetti } from "./confetti";
+
+// Format a match's kickoff for the card, in the viewer's local time, e.g.
+// "Jun 11 · 19:00". Returns "" for missing/unparseable dates so the line hides.
+function kickoff(iso: string): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "";
+  const date = d.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+  });
+  const time = d.toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  return `${date} · ${time}`;
+}
 
 export default function Predictor() {
   const [stage, setStage] = useState<string>("groups");
@@ -60,6 +78,53 @@ export default function Predictor() {
   const [subscribed, setSubscribed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [subOpen, setSubOpen] = useState(false);
+
+  // Live scores, polled from our own cached /api/scores endpoint.
+  const [live, setLive] = useState<LiveMatch[]>([]);
+  // True when the endpoint is serving the stand-in feed (no API key configured).
+  const [demoFeed, setDemoFeed] = useState(false);
+
+  // Poll /api/scores on a self-rescheduling timer. The endpoint is Redis-cached,
+  // so however often we poll, upstream is only hit ~once per cache window. We
+  // still keep our own footprint low: fast cadence only while a match is in
+  // play, slow otherwise, and no network work at all while the tab is hidden
+  // (visibilitychange wakes the loop back up).
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let stop = false;
+    const FAST = 30_000,
+      SLOW = 300_000;
+
+    async function tick() {
+      if (stop || document.hidden) return; // hidden: onVisible restarts us
+      let next = SLOW;
+      try {
+        const res = await fetch("/api/scores");
+        const data = await res.json();
+        const ms: LiveMatch[] = Array.isArray(data?.matches) ? data.matches : [];
+        if (!stop) {
+          setLive(ms);
+          setDemoFeed(!!data?.demo);
+        }
+        if (ms.some((m) => m.isLive)) next = FAST;
+      } catch {}
+      if (!stop) timer = setTimeout(tick, next);
+    }
+    function onVisible() {
+      if (!document.hidden) {
+        clearTimeout(timer);
+        tick();
+      }
+    }
+
+    tick();
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      stop = true;
+      clearTimeout(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, []);
 
   // Sync theme label from what the no-flash script already applied.
   useEffect(() => {
@@ -274,6 +339,14 @@ export default function Predictor() {
   const groupsComplete = allGroups(order);
   const champ = champion(state);
 
+  // Matches to surface in the banner. The demo feed is curated, so show it all;
+  // real data is filtered to in-play now or kicking off in the next few days.
+  const liveBanner = !mounted
+    ? []
+    : demoFeed
+      ? live
+      : upcomingOrLive(live, new Date().toISOString());
+
   // Celebrate when a champion is newly crowned (or changed to a different team).
   const prevChamp = useRef<string | null>(null);
   useEffect(() => {
@@ -322,6 +395,53 @@ export default function Predictor() {
 
   return (
     <>
+      {liveBanner.length > 0 && (
+        <section className="livewrap" aria-label="Live and upcoming scores">
+          <div className="livehead">
+            <span className="livedot" aria-hidden="true" />
+            <h2 className="livehd-title">Live &amp; Latest Results</h2>
+            {demoFeed && <span className="livehd-pill">Demo feed</span>}
+          </div>
+          <div className="livebar">
+            {liveBanner.map((m) => {
+              const badge = statusLabel(m);
+              const when = kickoff(m.utcDate);
+              return (
+                <article
+                  className={`livecard ${badge.toLowerCase()}`}
+                  key={m.id}
+                >
+                  <div className="lc-top">
+                    <span className="lc-badge">{badge}</span>
+                    {m.group && <span className="lc-grp">Grp {m.group}</span>}
+                  </div>
+                  <div className="lc-teams">
+                    <span className="fl">{m.homeFlag ?? "⚽"}</span>
+                    <span className="nm">{m.home}</span>
+                    <span className="sc">
+                      {m.homeScore ?? "–"}
+                      <i>:</i>
+                      {m.awayScore ?? "–"}
+                    </span>
+                    <span className="nm">{m.away}</span>
+                    <span className="fl">{m.awayFlag ?? "⚽"}</span>
+                  </div>
+                  {when && (
+                    <div className="lc-time">
+                      <span aria-hidden="true">🕑</span>
+                      {when}
+                    </div>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+          <div className="sectionsep" role="separator">
+            <span>Make your predictions</span>
+          </div>
+        </section>
+      )}
+
       <Tabs value={stage} onValueChange={go}>
         <nav className="bar">
           <TabsList className="tabs">

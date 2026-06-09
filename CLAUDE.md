@@ -38,10 +38,28 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   endpoint. In order: rejects oversized bodies (413), rate-limits per IP (429), drops honeypot
   hits (the hidden `website` field) as silent fake-success, caps/validates the email, and coerces
   `champion` to a known `TEAM_NAMES` value or `null`. Only then calls `addSubscriber()`.
-- **`lib/rate-limit.ts`** — durable per-IP limiter (`allowSubscribe()`) backed by Upstash Redis
-  (5 sign-ups / 10 min, sliding window). Reads `UPSTASH_REDIS_REST_URL` and
-  `UPSTASH_REDIS_REST_TOKEN`; when unset (e.g. local dev) it allows every request so the app runs
-  without an Upstash account.
+- **`app/api/scores/route.ts`** — `GET` handler the client polls for live scores. Serves
+  `{ matches, demo, updatedAt }` from the Redis key `wc:matches` (45s TTL); on a cold/expired
+  cache, one request takes a short `wc:matches:lock` and refreshes upstream while others get an
+  empty list (stampede guard). The 45s TTL caps upstream calls regardless of traffic, keeping us
+  under the free 10 req/min limit; a `Cache-Control: s-maxage=30` header lets Vercel's edge absorb
+  bursts without invoking the function. When `FOOTBALL_API_KEY` is unset it returns `demoMatches()`
+  with `demo: true` (uncached) so the section still renders; falls back to a direct fetch when
+  `redis` is null but a key is present.
+- **`lib/redis.ts`** — the shared Upstash Redis client (`redis`), reused by both the rate limiter
+  and the live-scores cache. Reads `UPSTASH_REDIS_REST_URL`/`_TOKEN` (or the `KV_REST_API_*`
+  Marketplace pair); exports `null` when unset so callers degrade gracefully (local dev).
+- **`lib/rate-limit.ts`** — durable per-IP limiter (`allowSubscribe()`) backed by the shared
+  `redis` client (5 sign-ups / 10 min, sliding window). When `redis` is null it allows every
+  request so the app runs without an Upstash account.
+- **`lib/scores.ts`** — live-score domain layer (no React). `fetchUpstreamMatches()` makes one
+  call to football-data.org (`/v4/competitions/WC/matches`, auth via `FOOTBALL_API_KEY`) and
+  normalizes each match into `LiveMatch`, mapping team names to our flags via a `NAME_ALIASES`
+  table, and tags each with its `group` letter and (via `statusLabel`) a LIVE/SOON/FT badge.
+  Returns `[]` when the key is unset or the request fails; `demoMatches()` is the stand-in feed the
+  route serves without a key. `upcomingOrLive(matches, now, days=3)` is the pure filter for "in
+  play, or kicking off within the next `days` days"; `predictor.tsx` polls `/api/scores` (paused
+  while the tab is hidden, fast cadence only while a match is live) and renders the banner.
 - **`lib/subscribers.ts`** — Vercel Postgres data layer. `addSubscriber()` inserts on the unique
   `email` with `ON CONFLICT DO NOTHING RETURNING id`, returning `true` for a fresh sign-up and
   `false` when the email already exists (the route turns `false` into a 409). It lazily runs
