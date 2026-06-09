@@ -1,0 +1,139 @@
+/* Groups */
+.groups {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+.gcard {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--sh);
+}
+.gcard .gh {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent);
+}
+.gh .gt {
+  font-family: "Anton", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 18px;
+}
+.gh .gt span {
+  color: var(--mag);
+}
+.gh .clr {
+  font-family: "Sometype Mono", monospace;
+  font-size: 11px;
+  color: var(--muted);
+  cursor: pointer;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 4px 7px;
+  background: transparent;
+}
+.gh .clr:hover {
+  color: var(--ink);
+  border-color: var(--line2);
+}
+.tlist {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+.team {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: 0.14s;
+  position: relative;
+}
+.team:hover {
+  background: var(--panel2);
+}
+.team .fl {
+  font-size: 20px;
+  width: 24px;
+  text-align: center;
+  filter: saturate(1.1);
+}
+.team .nm {
+  font-weight: 600;
+  font-size: 14.5px;
+  flex: 1;
+}
+.team .rk {
+  font-family: "Sometype Mono", monospace;
+  font-weight: 700;
+  font-size: 12px;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--muted);
+}
+.team.r1 {
+  background: rgba(246, 201, 69, 0.12);
+  border-color: rgba(246, 201, 69, 0.4);
+}
+.team.r1 .rk {
+  background: var(--g1);
+  color: #3a2c00;
+}
+.team.r2 {
+  background: rgba(201, 211, 208, 0.1);
+  border-color: rgba(201, 211, 208, 0.3);
+}
+.team.r2 .rk {
+  background: var(--g2);
+  color: #1c2422;
+}
+.team.r3 {
+  background: rgba(208, 138, 78, 0.12);
+  border-color: rgba(208, 138, 78, 0.35);
+}
+.team.r3 .rk {
+  background: var(--g3);
+  color: #241405;
+}
+.team.r4 {
+  opacity: 0.62;
+}
+.team.r4 .rk {
+  background: rgba(255, 255, 255, 0.04);
+}
+.team .tag {
+  font-family: "Sometype Mono", monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  position: absolute;
+  right: 10px;
+  top: -1px;
+  display: none;
+}
+.team.r1 .tag,
+.team.r2 .tag,
+.team.r3 .tag,
+.team.r4 .tag {
+  display: block;
+}
+.ghint {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 0 12px 12px;
+}

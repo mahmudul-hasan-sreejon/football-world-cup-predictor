@@ -1,0 +1,178 @@
+/* ============================================================
+   Liquid Glass — frosted, refractive treatment for every component
+   ============================================================ */
+:root {
+  --glass-blur: blur(22px) saturate(175%);
+  --glass-tint: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.13),
+    rgba(255, 255, 255, 0.04) 45%,
+    rgba(255, 255, 255, 0.07)
+  );
+  --glass-edge: rgba(255, 255, 255, 0.22);
+  /* inner specular: bright top hairline + soft bottom darkening + faint full outline */
+  --glass-inset:
+    inset 0 1px 0 rgba(255, 255, 255, 0.42),
+    inset 0 -10px 22px rgba(0, 0, 0, 0.16),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --glass-drop: 0 14px 38px rgba(0, 0, 0, 0.42), 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Frost the backdrop on every glass surface */
+.bar,
+.gcard,
+.third,
+.thirdsbar,
+.lock,
+.champ,
+.match,
+.rhead,
+.btn,
+.tab,
+.pill {
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+
+/* Large panels */
+.gcard,
+.thirdsbar,
+.lock {
+  background: var(--glass-tint);
+  border-color: var(--glass-edge);
+  box-shadow: var(--glass-inset), var(--glass-drop);
+}
+.bar {
+  background: linear-gradient(
+    135deg,
+    rgba(6, 16, 15, 0.62),
+    rgba(6, 16, 15, 0.42)
+  );
+  border-color: var(--glass-edge);
+  box-shadow: var(--glass-inset), var(--glass-drop);
+}
+.gh {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), transparent);
+}
+
+/* Third-place cards */
+.third {
+  background: var(--glass-tint);
+  border-color: var(--glass-edge);
+  box-shadow:
+    var(--glass-inset),
+    0 8px 22px rgba(0, 0, 0, 0.3);
+}
+.third:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.18),
+    rgba(255, 255, 255, 0.06)
+  );
+}
+.third.sel {
+  background: linear-gradient(
+    135deg,
+    rgba(39, 224, 200, 0.2),
+    rgba(39, 224, 200, 0.05)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 0 0 1px rgba(39, 224, 200, 0.45) inset,
+    0 10px 26px rgba(0, 0, 0, 0.32),
+    0 0 22px rgba(39, 224, 200, 0.18);
+}
+
+/* Bracket matches + round headers */
+.match {
+  background: var(--glass-tint);
+  border-color: var(--glass-edge);
+  box-shadow:
+    var(--glass-inset),
+    0 10px 26px rgba(0, 0, 0, 0.34);
+}
+.rhead {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.14),
+    rgba(255, 255, 255, 0.03)
+  );
+  border-color: var(--glass-edge);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    0 6px 18px rgba(0, 0, 0, 0.28);
+}
+
+/* Champion banner */
+.champ {
+  background: linear-gradient(
+    135deg,
+    rgba(246, 201, 69, 0.26),
+    rgba(255, 45, 114, 0.16) 60%,
+    rgba(255, 255, 255, 0.06)
+  );
+  border-color: rgba(246, 201, 69, 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -14px 28px rgba(0, 0, 0, 0.18),
+    0 16px 44px rgba(0, 0, 0, 0.42),
+    0 0 40px rgba(246, 201, 69, 0.18);
+}
+
+/* Buttons, tabs, pills — frosted glass capsules */
+.btn {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.16),
+    rgba(255, 255, 255, 0.05)
+  );
+  border-color: var(--glass-edge);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 6px 16px rgba(0, 0, 0, 0.28);
+}
+.btn:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    0 8px 20px rgba(0, 0, 0, 0.34);
+}
+.btn.ghost {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0.02)
+  );
+}
+.btn.mag {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 45, 114, 0.92),
+    rgba(209, 27, 89, 0.88)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 8px 22px rgba(255, 45, 114, 0.3);
+}
+.tab {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.03)
+  );
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.tab.active {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 6px 18px rgba(0, 0, 0, 0.3);
+}
+.pill {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.03)
+  );
+  border-color: var(--glass-edge);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+

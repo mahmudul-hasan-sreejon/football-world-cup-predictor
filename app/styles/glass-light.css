@@ -1,0 +1,142 @@
+/* ---- Liquid glass: light theme ---- */
+html.light {
+  --glass-tint: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.66),
+    rgba(255, 255, 255, 0.34) 45%,
+    rgba(255, 255, 255, 0.5)
+  );
+  /* dark hairline edge so frosted panels stay defined on a light background */
+  --glass-edge: rgba(20, 45, 38, 0.2);
+  --glass-inset:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -10px 22px rgba(20, 45, 38, 0.05),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  --glass-drop:
+    0 14px 36px rgba(20, 45, 38, 0.18), 0 3px 10px rgba(20, 45, 38, 0.12);
+}
+html.light .bar {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.72),
+    rgba(255, 255, 255, 0.5)
+  );
+}
+html.light .gh {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), transparent);
+}
+html.light .third:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.85),
+    rgba(255, 255, 255, 0.55)
+  );
+}
+html.light .btn {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.75),
+    rgba(255, 255, 255, 0.45)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 6px 16px rgba(20, 45, 38, 0.12);
+}
+html.light .btn.ghost {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0.25)
+  );
+}
+/* keep the magenta primary button pink (its white text needs the dark fill) */
+html.light .btn.mag {
+  background: linear-gradient(
+    180deg,
+    rgba(224, 16, 96, 0.95),
+    rgba(190, 12, 80, 0.92)
+  );
+  border-color: transparent;
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 8px 22px rgba(224, 16, 96, 0.28);
+}
+html.light .tab {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.3)
+  );
+}
+html.light .rhead {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.5)
+  );
+}
+html.light .pill {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.3)
+  );
+}
+/* Sign-up modal — frosted white panel on a soft scrim for the light theme */
+html.light .modal-overlay {
+  background: rgba(20, 45, 38, 0.32);
+}
+html.light .modal {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.96),
+    rgba(255, 255, 255, 0.86)
+  );
+  border-color: rgba(201, 154, 0, 0.55);
+  box-shadow: var(--glass-drop);
+}
+html.light .modal-x {
+  color: var(--muted2);
+}
+html.light .modal-x:hover {
+  color: var(--ink);
+  background: rgba(12, 28, 24, 0.06);
+}
+html.light .sub-input {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: var(--line2);
+}
+html.light .sub-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201, 154, 0, 0.22);
+}
+html.light .sub-check {
+  background: rgba(240, 189, 51, 0.28);
+  border-color: rgba(201, 154, 0, 0.55);
+}
+/* rank highlights need deeper tints to read on a light background (esp. the silver runner-up) */
+html.light .team.r1 {
+  background: rgba(240, 189, 51, 0.26);
+  border-color: rgba(201, 154, 0, 0.5);
+}
+html.light .team.r2 {
+  background: rgba(120, 138, 132, 0.2);
+  border-color: rgba(120, 138, 132, 0.5);
+}
+html.light .team.r3 {
+  background: rgba(192, 118, 58, 0.22);
+  border-color: rgba(192, 118, 58, 0.5);
+}
+
+/* Respect reduced transparency / blur-incapable browsers gracefully */
+@supports not (
+  (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+) {
+  .bar {
+    background: rgba(6, 16, 15, 0.92);
+  }
+  html.light .bar {
+    background: rgba(255, 255, 255, 0.94);
+  }
+}

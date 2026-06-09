@@ -19,19 +19,35 @@ There are no automated tests; verify changes by running `npm run build` (type ch
 
 ## Architecture
 
-- **`lib/bracket.ts`** — the domain layer. Holds the static tournament data (`TEAMS`, `ANNEX` —
-  the 495-combination Annex C table, bracket structures `R32`/`R16`/`QF`/`SF`/`FINAL`/`THIRDM`),
-  the typed model (`Team`, `Slot`, `Match`, `Round`, `State`), and **pure** functions that take a
-  `State` (`{ order, thirds, picks }`) and compute results — `resolve`, `validatePicks`,
-  `champion`, etc. No React or DOM here.
-- **`app/predictor.tsx`** — the only client component (`'use client'`). Owns all interactive state
-  (`order`, `thirds`, `picks`, `stage`, `theme`) via `useState` and renders the three stages, nav,
-  and toast. Delegates all bracket math to `lib/bracket.ts`.
-- **`app/page.tsx`** — server component: static hero/footer, mounts `<Predictor />`.
+- **`lib/bracket.ts`** — the domain layer's public entry point. Holds the typed model (`Team`,
+  `Slot`, `Match`, `Round`, `State`), the bracket structures (`R32`/`R16`/`QF`/`SF`/`FINAL`/`THIRDM`),
+  and the **pure** functions that take a `State` (`{ order, thirds, picks }`) and compute results —
+  `resolve`, `validatePicks`, `champion`, etc. No React or DOM. The two large static tables live in
+  sibling modules and are **re-exported** here, so `@/lib/bracket` stays the single import site:
+  `lib/annex.ts` (`ANNEX` — the 495-combination Annex C table — and `COL`) and `lib/teams.ts`
+  (`TEAMS` plus the `GROUPS`/`BYID`/`TEAM_NAMES` indexes derived from it).
+- **`components/predictor/`** — the interactive UI, split into one stateful container plus
+  presentational pieces and hooks (all `'use client'` via the container/hook boundary):
+  - `predictor.tsx` — the container (default export, mounted by `page.tsx`). Owns all interactive
+    state (`order`, `thirds`, `picks`, `stage`, subscription, `mounted`) and every state mutation
+    (`applyState`, `clickTeam`, `toggleThird`, `clickSlot`, `autoPick`, `resetAll`, `subscribe`),
+    delegating bracket math to `lib/bracket.ts` and passing data + callbacks down to the stages.
+  - `nav.tsx`, `live-banner.tsx`, `groups-stage.tsx`, `thirds-stage.tsx`, `knockout-stage.tsx`,
+    `subscribe-dialog.tsx` — presentational components; each stage renders its own `<TabsContent>`.
+  - `use-live-scores.ts` (the self-rescheduling `/api/scores` poller) and `use-theme.ts` (theme
+    state + the view-transition toggle) — the two effect-heavy concerns extracted as hooks.
+- **`app/page.tsx`** — server component: static hero/footer, mounts `<Predictor />` from
+  `@/components/predictor/predictor`.
 - **`app/layout.tsx`** — SEO via the Metadata API, Google Fonts, JSON-LD, and a no-flash inline
   theme script. `<html>`/`<body>` use `suppressHydrationWarning` because that script mutates the
   class before hydration.
-- **`app/globals.css`** — global styles; theming is driven by a `light` class on `<html>`.
+- **`app/globals.css`** — the stylesheet entry point: the Tailwind theme/utilities imports followed
+  by `@import "./styles/*.css"`. The bespoke rules are **unlayered**, so cascade order is import
+  order — keep the `@import` sequence intact, and keep `theme-light.css`/`glass.css`/`glass-light.css`
+  last so they override the base look. The partials under **`app/styles/`** are split by concern
+  (`base`, `header`, `live-scores`, `nav`, `stage`, `groups`, `thirds`, `champion`, `modal`,
+  `bracket`, `footer`, `responsive`, plus the theme/glass overrides). Theming is driven by a `light`
+  class on `<html>`.
 - **`app/confetti.ts`** — dependency-free canvas confetti (`fireConfetti()`); client-only, self-cleans
   the canvas, and no-ops under `prefers-reduced-motion`. Fired from `predictor.tsx` on champion.
 - **`app/api/subscribe/route.ts`** — `POST` handler and the abuse boundary for this public
@@ -58,8 +74,9 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   table, and tags each with its `group` letter and (via `statusLabel`) a LIVE/SOON/FT badge.
   Returns `[]` when the key is unset or the request fails; `demoMatches()` is the stand-in feed the
   route serves without a key. `upcomingOrLive(matches, now, days=3)` is the pure filter for "in
-  play, or kicking off within the next `days` days"; `predictor.tsx` polls `/api/scores` (paused
-  while the tab is hidden, fast cadence only while a match is live) and renders the banner.
+  play, or kicking off within the next `days` days". The `useLiveScores` hook
+  (`components/predictor/use-live-scores.ts`) polls `/api/scores` (paused while the tab is hidden,
+  fast cadence only while a match is live) and `LiveBanner` renders the strip.
 - **`lib/subscribers.ts`** — Vercel Postgres data layer. `addSubscriber()` inserts on the unique
   `email` with `ON CONFLICT DO NOTHING RETURNING id`, returning `true` for a fresh sign-up and
   `false` when the email already exists (the route turns `false` into a 409). It lazily runs

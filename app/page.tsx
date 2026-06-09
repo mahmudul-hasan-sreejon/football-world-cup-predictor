@@ -1,4 +1,4 @@
-import Predictor from "./predictor";
+import Predictor from "@/components/predictor/predictor";
 
 export default function Home() {
   return (

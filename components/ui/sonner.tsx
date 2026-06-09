@@ -3,9 +3,10 @@
 import { Toaster as Sonner, type ToasterProps } from "sonner";
 
 /**
- * shadcn-style Sonner Toaster, themed to match the project's original `.toast`
- * pill (see app/globals.css): a high-contrast frosted capsule centered at the
- * bottom — light pill on the dark theme, dark pill on the light theme.
+ * shadcn-style Sonner Toaster, themed to match the project's liquid-glass look:
+ * a high-contrast frosted capsule centered at the bottom — light pill on the
+ * dark theme, dark pill on the light theme. The styling is applied inline below
+ * (sonner renders its own markup), not via a CSS class.
  *
  * The app owns its own theme (no next-themes), so the active theme is passed in.
  */

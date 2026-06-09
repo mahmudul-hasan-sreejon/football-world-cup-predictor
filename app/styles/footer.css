@@ -1,0 +1,39 @@
+
+/* misc */
+.note {
+  margin-top: 34px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+.note b {
+  color: var(--muted2);
+}
+.footer {
+  margin-top: 30px;
+  padding: 22px 0 36px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+.foot-brand {
+  margin: 0;
+  font-family: "Sometype Mono", monospace;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.foot-brand .y {
+  color: var(--gold);
+}
+.foot-brand .p {
+  color: var(--mag);
+}
+.foot-meta {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}

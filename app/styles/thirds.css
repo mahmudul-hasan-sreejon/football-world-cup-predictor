@@ -1,0 +1,92 @@
+/* Thirds */
+.thirds-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+.third {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 13px;
+  border-radius: 14px;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  transition: 0.15s;
+}
+.third:hover {
+  border-color: var(--line2);
+  background: var(--panel2);
+}
+.third .fl {
+  font-size: 24px;
+  width: 28px;
+  text-align: center;
+}
+.third .meta {
+  flex: 1;
+  min-width: 0;
+}
+.third .nm {
+  font-weight: 700;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.third .gp {
+  font-family: "Sometype Mono", monospace;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+.third .chk {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--line2);
+  display: grid;
+  place-items: center;
+  color: transparent;
+  font-weight: 900;
+  transition: 0.15s;
+  flex: none;
+}
+.third.sel {
+  border-color: var(--cyan);
+  background: rgba(39, 224, 200, 0.1);
+  box-shadow: 0 0 0 1px rgba(39, 224, 200, 0.4) inset;
+}
+.third.sel .chk {
+  background: var(--cyan);
+  border-color: var(--cyan);
+  color: #06221f;
+}
+.third.dis {
+  opacity: 0.4;
+  pointer-events: none;
+}
+.thirdsbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+}
+.counter {
+  font-family: "Anton", sans-serif;
+  font-size: 30px;
+}
+.counter span {
+  color: var(--cyan);
+}
+.counter .of {
+  color: var(--muted);
+  font-size: 18px;
+}

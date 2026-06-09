@@ -1,0 +1,192 @@
+/* Live / latest results — a header row plus a horizontal strip of match cards. */
+.livewrap {
+  margin: 18px 0 24px;
+}
+.livehead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 2px 4px;
+}
+.livehead .livedot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--mag);
+  box-shadow: 0 0 0 0 rgba(255, 45, 114, 0.5);
+  animation: livedot 1.8s ease-out infinite;
+}
+.livehd-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.livehd-pill {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--line2);
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+.livebar {
+  display: flex;
+  gap: 10px;
+  /* Vertical padding so the cards' glass drop shadows + live glow render
+     inside the scroll container's clip region (overflow-x also clips the
+     vertical axis). No negative margin — the row clips cleanly at the page
+     gutter rather than bleeding past it. */
+  padding: 16px 4px 34px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.livecard {
+  flex: 0 0 auto;
+  min-width: 218px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 11px 13px;
+  border: 1px solid var(--glass-edge);
+  border-radius: 14px;
+  background: var(--glass-tint);
+  box-shadow: var(--glass-inset), var(--glass-drop);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+.livecard.live {
+  border-color: rgba(255, 45, 114, 0.5);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 45, 114, 0.2),
+    rgba(255, 45, 114, 0.05)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 0 0 1px rgba(255, 45, 114, 0.45) inset,
+    0 10px 26px rgba(0, 0, 0, 0.3),
+    0 0 22px rgba(255, 45, 114, 0.16);
+}
+.lc-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.lc-badge {
+  font-family: "Sometype Mono", monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+.livecard.live .lc-badge {
+  color: #fff;
+  background: var(--mag);
+  animation: livepulse 1.6s ease-in-out infinite;
+}
+.livecard.soon .lc-badge {
+  color: #06100f;
+  background: var(--cyan);
+}
+.livecard.ft .lc-badge {
+  color: var(--muted2);
+  background: rgba(255, 255, 255, 0.12);
+}
+.lc-grp {
+  font-family: "Sometype Mono", monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.lc-teams {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  white-space: nowrap;
+  min-width: 0;
+}
+.lc-teams .fl {
+  font-size: 17px;
+  flex: 0 0 auto;
+}
+.lc-teams .nm {
+  font-weight: 700;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1 1 0;
+  min-width: 0;
+}
+.lc-teams .sc {
+  font-family: "Sometype Mono", monospace;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  flex: 0 0 auto;
+  padding: 0 2px;
+}
+.lc-teams .sc i {
+  color: var(--muted);
+  font-style: normal;
+  margin: 0 3px;
+}
+.lc-time {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  padding-top: 7px;
+}
+@keyframes livedot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 45, 114, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 7px rgba(255, 45, 114, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 45, 114, 0);
+  }
+}
+@keyframes livepulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .livehead .livedot,
+  .livecard.live .lc-badge {
+    animation: none;
+  }
+}
+
+/* Labeled divider between the live banner and the prediction UI. */
+.sectionsep {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 2px 2px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.sectionsep::before,
+.sectionsep::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}

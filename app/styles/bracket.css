@@ -1,0 +1,161 @@
+.scrollhint {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0 0 10px;
+  font-family: "Sometype Mono", monospace;
+  letter-spacing: 0.05em;
+}
+.bracket-scroll {
+  overflow-x: auto;
+  padding: 16px 4px 26px;
+  -webkit-overflow-scrolling: touch;
+}
+.bracket {
+  display: flex;
+  gap: 18px;
+  min-width: min-content;
+}
+.round {
+  display: flex;
+  flex-direction: column;
+  min-width: 212px;
+  flex: none;
+}
+.round.final-col {
+  min-width: 230px;
+}
+.rhead {
+  font-family: "Anton", sans-serif;
+  text-transform: uppercase;
+  font-size: 16px;
+  letter-spacing: 0.05em;
+  padding: 9px 8px;
+  margin-bottom: 8px;
+  text-align: center;
+  background: rgba(8, 20, 18, 0.92);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.rhead small {
+  display: block;
+  font-family: "Sometype Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  font-weight: 400;
+  margin-top: 2px;
+}
+.round .matches {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 12px;
+  flex: 1;
+}
+.match {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  overflow: hidden;
+  box-shadow: var(--sh);
+}
+.match .mn {
+  font-family: "Sometype Mono", monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  padding: 5px 10px 3px;
+  text-transform: uppercase;
+}
+.slot {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 10px;
+  cursor: pointer;
+  border-top: 1px solid var(--line);
+  transition: 0.13s;
+}
+.slot:first-of-type {
+  border-top: none;
+}
+.slot:hover {
+  background: var(--panel2);
+}
+.slot .fl {
+  font-size: 17px;
+  width: 21px;
+  text-align: center;
+}
+.slot .nm {
+  font-weight: 600;
+  font-size: 13.5px;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.slot.empty {
+  cursor: default;
+  opacity: 0.6;
+}
+.slot.empty:hover {
+  background: transparent;
+}
+.slot.empty .nm {
+  color: var(--muted);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 12.5px;
+}
+.slot.empty .fl {
+  opacity: 0.3;
+}
+.slot.win {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 45, 114, 0.22),
+    rgba(255, 45, 114, 0.05)
+  );
+}
+.slot.win .nm {
+  color: #fff;
+  font-weight: 800;
+}
+.slot.win::after {
+  content: "✓";
+  margin-left: auto;
+  color: var(--mag);
+  font-weight: 900;
+  font-size: 13px;
+}
+.slot.lose {
+  opacity: 0.5;
+}
+.match.final-m {
+  border-color: rgba(246, 201, 69, 0.5);
+  background: linear-gradient(180deg, rgba(246, 201, 69, 0.1), var(--panel));
+}
+.match.final-m .mn {
+  color: var(--gold);
+}
+.match.third-m {
+  border-style: dashed;
+}
+.lock {
+  border: 1px dashed var(--line2);
+  border-radius: 14px;
+  padding: 30px 20px;
+  text-align: center;
+  color: var(--muted2);
+  background: var(--panel);
+}
+.lock h3 {
+  font-family: "Anton", sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: var(--ink);
+  font-size: 22px;
+  margin: 0 0 8px;
+}

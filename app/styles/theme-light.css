@@ -1,0 +1,84 @@
+/* ---- Light theme ---- */
+html.light {
+  --bg: #eef3ef;
+  --bg2: #dde7e0;
+  --panel: rgba(12, 28, 24, 0.04);
+  --panel2: rgba(12, 28, 24, 0.07);
+  --line: rgba(12, 28, 24, 0.13);
+  --line2: rgba(12, 28, 24, 0.24);
+  --ink: #0d1c18;
+  --muted: #5e7a72;
+  --muted2: #3c544c;
+  --gold: #c98a00;
+  --mag: #e01060;
+  --cyan: #0a9486;
+  --grass: #1f8f5f;
+  --g1: #f0bd33;
+  --g2: #9aa7a3;
+  --g3: #c0763a;
+  --g4: #5b6c69;
+  --sh: 0 14px 36px rgba(20, 45, 38, 0.14);
+}
+html.light body {
+  background-image:
+    radial-gradient(
+      1200px 700px at 80% -10%,
+      rgba(224, 16, 96, 0.1),
+      transparent 60%
+    ),
+    radial-gradient(
+      1000px 800px at -10% 10%,
+      rgba(10, 148, 134, 0.1),
+      transparent 55%
+    ),
+    radial-gradient(
+      900px 700px at 50% 120%,
+      rgba(31, 143, 95, 0.12),
+      transparent 60%
+    ),
+    linear-gradient(160deg, var(--bg), var(--bg2));
+}
+html.light body::before {
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+}
+html.light .bar {
+  background: rgba(255, 255, 255, 0.78);
+}
+html.light .tab.active {
+  color: #fff;
+  background: linear-gradient(180deg, #22995f, #15724b);
+}
+html.light .tab .n {
+  background: rgba(12, 28, 24, 0.08);
+}
+html.light .tab.active .n {
+  background: var(--mag);
+  color: #fff;
+}
+html.light .gh {
+  background: linear-gradient(180deg, rgba(12, 28, 24, 0.05), transparent);
+}
+html.light .team .rk {
+  background: rgba(12, 28, 24, 0.06);
+}
+html.light .team.r4 .rk {
+  background: rgba(12, 28, 24, 0.04);
+}
+html.light .btn:hover {
+  border-color: var(--ink);
+}
+html.light .rhead {
+  background: rgba(255, 255, 255, 0.85);
+}
+html.light .slot.win .nm {
+  color: var(--ink);
+}
+/* The teal SOON badge darkens in light mode, so flip its text to light; the FT
+   badge's white overlay is invisible on a light card, so use a dark overlay. */
+html.light .livecard.soon .lc-badge {
+  color: #fff;
+}
+html.light .livecard.ft .lc-badge {
+  background: rgba(12, 28, 24, 0.1);
+}

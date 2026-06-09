@@ -1,0 +1,202 @@
+/* Sign-up modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(4, 10, 9, 0.66);
+  backdrop-filter: blur(4px);
+  animation: modal-fade 0.2s ease;
+}
+.modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 51;
+  transform: translate(-50%, -50%);
+  width: min(440px, calc(100vw - 32px));
+  padding: 26px 24px;
+  border-radius: 18px;
+  border: 1px solid rgba(246, 201, 69, 0.45);
+  background: linear-gradient(
+    120deg,
+    rgba(20, 32, 29, 0.98),
+    rgba(28, 18, 26, 0.98)
+  );
+  box-shadow: var(--sh);
+  animation: modal-pop 0.26s cubic-bezier(0.2, 0.9, 0.3, 1.4);
+}
+.modal-x {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 8px;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+.modal-x:hover {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.06);
+}
+@keyframes modal-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes modal-pop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -46%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .modal,
+  .modal-overlay {
+    animation: none;
+  }
+}
+.sub-tro {
+  position: relative;
+  display: block;
+  width: fit-content;
+  font-size: 42px;
+  filter: drop-shadow(0 6px 14px rgba(246, 201, 69, 0.5));
+}
+.sub-tro::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 150%;
+  height: 150%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(246, 201, 69, 0.65) 0%,
+    rgba(246, 201, 69, 0.25) 45%,
+    transparent 70%
+  );
+  z-index: -1;
+  pointer-events: none;
+  animation: tro-glow 2.4s ease-in-out infinite;
+}
+.sub-tro::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 180%;
+  height: 180%;
+  transform: translate(-50%, -50%);
+  z-index: -2;
+  pointer-events: none;
+  background: repeating-conic-gradient(
+    rgba(246, 201, 69, 0.55) 0deg 5deg,
+    transparent 5deg 16deg
+  );
+  -webkit-mask: radial-gradient(
+    circle,
+    #000 0%,
+    rgba(0, 0, 0, 0.5) 32%,
+    transparent 66%
+  );
+  mask: radial-gradient(
+    circle,
+    #000 0%,
+    rgba(0, 0, 0, 0.5) 32%,
+    transparent 66%
+  );
+  animation: tro-rays 12s linear infinite;
+}
+.sub-tro {
+  animation: tro-bounce 0.9s cubic-bezier(0.2, 0.9, 0.3, 1.4) 0.1s both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sub-tro,
+  .sub-tro::before,
+  .sub-tro::after {
+    animation: none;
+  }
+}
+.sub-title {
+  display: block;
+  font-family: "Anton", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 21px;
+}
+.sub-champ {
+  text-transform: uppercase;
+  color: #ff2d72;
+}
+.sub-modal p,
+.sub-copy p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.sub-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.sub-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.sub-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(8, 20, 18, 0.6);
+  color: var(--ink);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition:
+    border-color 0.18s,
+    box-shadow 0.18s;
+}
+.sub-input::placeholder {
+  color: var(--muted);
+}
+.sub-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(246, 201, 69, 0.2);
+}
+.sub-done {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.sub-check {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(246, 201, 69, 0.18);
+  border: 1px solid rgba(246, 201, 69, 0.5);
+  color: var(--gold);
+  font-weight: 700;
+}

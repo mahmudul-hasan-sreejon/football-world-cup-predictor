@@ -1,0 +1,26 @@
+/* ---- Theme switch animation ---- */
+/* Let our circular clip-path drive the reveal instead of the default cross-fade */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-new(root) {
+  z-index: 1;
+}
+::view-transition-old(root) {
+  z-index: 0;
+}
+/* Fallback for browsers without the View Transitions API */
+.theme-fade * {
+  transition:
+    background-color 0.45s ease,
+    color 0.45s ease,
+    border-color 0.45s ease,
+    box-shadow 0.45s ease !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-fade * {
+    transition: none !important;
+  }
+}

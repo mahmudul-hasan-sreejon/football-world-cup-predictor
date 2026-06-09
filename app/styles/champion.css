@@ -1,0 +1,156 @@
+/* Knockout */
+.champ {
+  margin: 0 0 20px;
+  border: 1px solid rgba(246, 201, 69, 0.45);
+  border-radius: 18px;
+  overflow: hidden;
+  background: linear-gradient(
+    120deg,
+    rgba(246, 201, 69, 0.16),
+    rgba(255, 45, 114, 0.1)
+  );
+  box-shadow: var(--sh);
+  display: none;
+}
+.champ.show {
+  display: block;
+  animation: pop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.4);
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.champ-in {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 20px 22px;
+  flex-wrap: wrap;
+}
+.champ .tro {
+  position: relative;
+  font-size: 46px;
+  filter: drop-shadow(0 6px 14px rgba(246, 201, 69, 0.5));
+}
+.champ .tro::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 150%;
+  height: 150%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(246, 201, 69, 0.65) 0%,
+    rgba(246, 201, 69, 0.25) 45%,
+    transparent 70%
+  );
+  z-index: -1;
+  pointer-events: none;
+}
+.champ .tro::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 180%;
+  height: 180%;
+  transform: translate(-50%, -50%);
+  z-index: -2;
+  pointer-events: none;
+  background: repeating-conic-gradient(
+    rgba(246, 201, 69, 0.55) 0deg 5deg,
+    transparent 5deg 16deg
+  );
+  -webkit-mask: radial-gradient(
+    circle,
+    #000 0%,
+    rgba(0, 0, 0, 0.5) 32%,
+    transparent 66%
+  );
+  mask: radial-gradient(
+    circle,
+    #000 0%,
+    rgba(0, 0, 0, 0.5) 32%,
+    transparent 66%
+  );
+}
+.champ.show .tro::before {
+  animation: tro-glow 2.4s ease-in-out infinite;
+}
+.champ.show .tro::after {
+  animation: tro-rays 12s linear infinite;
+}
+.champ.show .tro {
+  animation: tro-bounce 0.9s cubic-bezier(0.2, 0.9, 0.3, 1.4) 0.15s both;
+}
+@keyframes tro-bounce {
+  0% {
+    transform: scale(0.4) rotate(-18deg);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(1.25) rotate(8deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+@keyframes tro-glow {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(0.85);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.25);
+    opacity: 0.9;
+  }
+}
+@keyframes tro-rays {
+  from {
+    transform: translate(-50%, -50%) rotate(0);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .champ.show .tro,
+  .champ.show .tro::before,
+  .champ.show .tro::after {
+    animation: none;
+  }
+}
+.champ .lbl {
+  font-family: "Sometype Mono", monospace;
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.champ .who {
+  font-family: "Anton", sans-serif;
+  font-size: clamp(30px, 6vw, 52px);
+  text-transform: uppercase;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.champ-meta {
+  flex: 1;
+  min-width: 0;
+}
+.champ-sub {
+  flex: none;
+}
