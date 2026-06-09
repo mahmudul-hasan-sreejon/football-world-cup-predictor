@@ -1,7 +1,9 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -400,7 +402,7 @@ export default function Predictor() {
           <div className="livehead">
             <span className="livedot" aria-hidden="true" />
             <h2 className="livehd-title">Live &amp; Latest Results</h2>
-            {demoFeed && <span className="livehd-pill">Demo feed</span>}
+            {demoFeed && <Badge variant="demo">Demo feed</Badge>}
           </div>
           <div className="livebar">
             {liveBanner.map((m) => {
@@ -412,8 +414,8 @@ export default function Predictor() {
                   key={m.id}
                 >
                   <div className="lc-top">
-                    <span className="lc-badge">{badge}</span>
-                    {m.group && <span className="lc-grp">Grp {m.group}</span>}
+                    <Badge variant="status">{badge}</Badge>
+                    {m.group && <Badge variant="group">Grp {m.group}</Badge>}
                   </div>
                   <div className="lc-teams">
                     <span className="fl">{m.homeFlag ?? "⚽"}</span>
@@ -480,9 +482,9 @@ export default function Predictor() {
                 third place may still qualify.
               </p>
             </div>
-            <div className="pill">
+            <Badge variant="pill">
               Groups ranked: <b>{done}</b> / 12
-            </div>
+            </Badge>
           </div>
           <div className="groups">
             {GROUPS.map((g) => {
@@ -493,9 +495,9 @@ export default function Predictor() {
                     <span className="gt">
                       Group <span>{g}</span>
                     </span>
-                    <button className="clr" onClick={() => clearGroup(g)}>
+                    <Button variant="clr" onClick={() => clearGroup(g)}>
                       clear
-                    </button>
+                    </Button>
                   </div>
                   <div className="tlist">
                     {TEAMS[g].map((t, i) => {
@@ -563,9 +565,9 @@ export default function Predictor() {
                 groups they come from determines the exact knockout seeding.
               </p>
             </div>
-            <div className="pill">
+            <Badge variant="pill">
               Selected: <b>{thirds.size}</b> / 8
-            </div>
+            </Badge>
           </div>
           {!groupsComplete ? (
             <Card className="lock">
@@ -636,9 +638,9 @@ export default function Predictor() {
                 Change an earlier pick and the rounds after it reset.
               </p>
             </div>
-            <div className="pill">
+            <Badge variant="pill">
               R32 seeded via <b>Annex C</b>
-            </div>
+            </Badge>
           </div>
 
           <div className={`champ${champ ? " show" : ""}`}>
@@ -771,7 +773,7 @@ export default function Predictor() {
                 </DialogDescription>
               </div>
               <div className="sub-row">
-                <input
+                <Input
                   type="email"
                   className="sub-input"
                   placeholder="you@example.com"
