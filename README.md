@@ -35,8 +35,14 @@ Crowning a champion fires a confetti burst (skipped for users who prefer reduced
 modal to optionally subscribe with an email — the only thing saved server-side, in Vercel Postgres
 (see [Configuration](#configuration)).
 
-Your bracket picks live in memory only (no persistence) — use **Copy summary** to export them as
-text. The theme preference is saved client-side, in `localStorage` under `wc26-theme`.
+Above the stages, a **Live & Latest Results** strip shows in-play and upcoming matches, polled from a
+cached `/api/scores` endpoint; it falls back to a curated demo feed when no football-data.org key is
+configured. The whole predictor renders a shimmering skeleton until it mounts on the client, so the
+real picks and live data fade in without a layout pop-in.
+
+Your bracket picks live in memory only and reset on reload. **Auto-pick by ranking** fills the entire
+bracket from rough team-strength ratings as an editable starting point, and **Reset** clears it. The
+theme preference is saved client-side, in `localStorage` under `wc26-theme`.
 
 ## Configuration
 
@@ -81,19 +87,26 @@ to bloat the `subscribers` table (see `app/api/subscribe/route.ts` and `lib/rate
 
 - `app/layout.tsx` — root layout, SEO metadata, fonts, JSON-LD, no-flash theme script
 - `app/page.tsx` — static hero/footer, mounts the predictor
-- `app/predictor.tsx` — client component holding all interactive state and rendering
 - `app/confetti.ts` — dependency-free canvas confetti burst for the champion celebration
-- `app/api/subscribe/route.ts` — POST endpoint: rate-limits, validates input, and upserts a subscriber
-- `lib/rate-limit.ts` — durable per-IP rate limiter for the subscribe route (Upstash Redis)
-- `app/globals.css` — global styles
+- `app/globals.css` — stylesheet entry point; imports the per-concern partials under `app/styles/`
 - `app/icon.svg` — favicon (served as `/icon.svg`)
 - `app/opengraph-image.tsx` — dynamically generated 1200×630 social-share image (`next/og`)
 - `app/robots.ts` / `app/sitemap.ts` — generated `robots.txt` and `sitemap.xml`
-- `lib/bracket.ts` — tournament data + types + pure bracket logic (Annex C seeding, resolve/validate)
+- `app/api/subscribe/route.ts` — POST endpoint: rate-limits, validates input, and upserts a subscriber
+- `app/api/scores/route.ts` — GET endpoint the client polls for live scores (Redis-cached, demo-feed fallback)
+- `components/predictor/` — the interactive UI: a stateful container (`predictor.tsx`) plus presentational
+  stages (`groups-stage`, `thirds-stage`, `knockout-stage`), `nav`, `live-banner`, `subscribe-dialog`, the
+  pre-mount `predictor-skeleton`, and the `use-live-scores` / `use-theme` hooks
+- `components/ui/` — shadcn/ui primitives, structural wrappers over the bespoke CSS (badge, button, card,
+  dialog, input, tabs, sonner toaster, skeleton)
+- `lib/bracket.ts` — tournament types + pure bracket logic (resolve/validate); re-exports `lib/annex.ts`
+  (the Annex C seeding table) and `lib/teams.ts` (team data + indexes)
+- `lib/scores.ts` — live-score domain layer: normalizes football-data.org matches and the demo feed
 - `lib/subscribers.ts` — Vercel Postgres data layer for newsletter sign-ups (unique-email insert + table bootstrap)
+- `lib/rate-limit.ts` — durable per-IP rate limiter for the subscribe route (Upstash Redis)
+- `lib/redis.ts` — shared Upstash Redis client, reused by the rate limiter and the live-scores cache
 - `lib/site.ts` — resolves the canonical site URL (shared by layout, robots, and sitemap)
 - `lib/utils.ts` — `cn()` class-name helper (clsx + tailwind-merge)
-- `components/ui/` — shadcn/ui primitives (button, card, dialog, tabs, sonner toaster)
 
 ## Deployment
 
