@@ -65,8 +65,14 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   `false` when the email already exists (the route turns `false` into a 409). It lazily runs
   `CREATE TABLE IF NOT EXISTS` on first call, so a fresh DB needs no migration. Reads `POSTGRES_URL`
   from the env via `@vercel/postgres`.
-- **`components/ui/`** — shadcn/ui primitives (button, card, dialog, tabs, sonner). `lib/utils.ts`
-  holds the `cn()` helper (clsx + tailwind-merge); component config lives in `components.json`.
+- **`components/ui/`** — shadcn/ui primitives (badge, button, card, dialog, input, tabs, sonner).
+  These wrappers are **structural only**: they delegate all visuals to the bespoke classes in
+  `globals.css` rather than imposing shadcn's default Tailwind skin, so the liquid-glass look and
+  both themes survive. `button`/`badge` use `cva` to map a `variant` to an existing class
+  (`.btn`/`.mag`/`.ghost`/`.clr`; `.pill`/`.lc-badge`/`.lc-grp`/`.livehd-pill`); `card`/`input`/`tabs`
+  just forward `className`. Prefer these primitives for new/changed UI — add a new one here when none
+  fits, following the same delegate-to-CSS convention. `lib/utils.ts` holds the `cn()` helper (clsx +
+  tailwind-merge); component config lives in `components.json`.
 - **`lib/site.ts`** — resolves the canonical `SITE_URL` once (env: `NEXT_PUBLIC_SITE_URL` →
   `VERCEL_PROJECT_PRODUCTION_URL` → `VERCEL_URL` → `localhost`). Imported by `layout.tsx`,
   `robots.ts`, and `sitemap.ts` — change the resolution logic here, not in those consumers.
