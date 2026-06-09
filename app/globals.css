@@ -133,7 +133,7 @@ h1 .p {
 /* Tabs + actions */
 /* Live / latest results — a header row plus a horizontal strip of match cards. */
 .livewrap {
-  margin: 18px 0 0;
+  margin: 18px 0 24px;
 }
 .livehead {
   display: flex;
