@@ -20,6 +20,7 @@
 @import "./styles/modal.css"; /* sign-up dialog */
 @import "./styles/bracket.css"; /* stage 3: knockout bracket */
 @import "./styles/footer.css"; /* data note + footer */
+@import "./styles/skeleton.css"; /* loading placeholders (pre-mount) */
 @import "./styles/responsive.css"; /* mobile-first media queries */
 @import "./styles/theme-light.css"; /* light-theme overrides */
 @import "./styles/glass.css"; /* liquid-glass treatment (dark) */

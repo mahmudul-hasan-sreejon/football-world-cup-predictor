@@ -30,6 +30,7 @@ import { GroupsStage } from "./groups-stage";
 import { KnockoutStage } from "./knockout-stage";
 import { LiveBanner } from "./live-banner";
 import { Nav } from "./nav";
+import { PredictorSkeleton } from "./predictor-skeleton";
 import { SubscribeDialog } from "./subscribe-dialog";
 import { ThirdsStage } from "./thirds-stage";
 import { useLiveScores } from "./use-live-scores";
@@ -228,6 +229,10 @@ export default function Predictor() {
     }
     prevChamp.current = id;
   }, [champ?.id, subscribed]);
+
+  // Until we've mounted on the client, render a whole-page skeleton — the
+  // server has no picks/live data to show, and this avoids a hydration pop-in.
+  if (!mounted) return <PredictorSkeleton />;
 
   const tabs = [
     { k: "groups", num: "1", label: "Groups", done: groupsComplete },

@@ -34,6 +34,9 @@ There are no automated tests; verify changes by running `npm run build` (type ch
     delegating bracket math to `lib/bracket.ts` and passing data + callbacks down to the stages.
   - `nav.tsx`, `live-banner.tsx`, `groups-stage.tsx`, `thirds-stage.tsx`, `knockout-stage.tsx`,
     `subscribe-dialog.tsx` — presentational components; each stage renders its own `<TabsContent>`.
+  - `predictor-skeleton.tsx` — the whole-page loading state the container renders while `mounted`
+    is false. It reuses the real layout classes (`.livewrap`/`.bar`/`.groups`/…) filled with
+    `<Skeleton>` blocks, so the server render and the pre-hydration client render match (no pop-in).
   - `use-live-scores.ts` (the self-rescheduling `/api/scores` poller) and `use-theme.ts` (theme
     state + the view-transition toggle) — the two effect-heavy concerns extracted as hooks.
 - **`app/page.tsx`** — server component: static hero/footer, mounts `<Predictor />` from
@@ -46,7 +49,7 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   order — keep the `@import` sequence intact, and keep `theme-light.css`/`glass.css`/`glass-light.css`
   last so they override the base look. The partials under **`app/styles/`** are split by concern
   (`base`, `header`, `live-scores`, `nav`, `stage`, `groups`, `thirds`, `champion`, `modal`,
-  `bracket`, `footer`, `responsive`, plus the theme/glass overrides). Theming is driven by a `light`
+  `bracket`, `footer`, `skeleton`, `responsive`, plus the theme/glass overrides). Theming is driven by a `light`
   class on `<html>`.
 - **`app/confetti.ts`** — dependency-free canvas confetti (`fireConfetti()`); client-only, self-cleans
   the canvas, and no-ops under `prefers-reduced-motion`. Fired from `predictor.tsx` on champion.
@@ -82,12 +85,14 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   `false` when the email already exists (the route turns `false` into a 409). It lazily runs
   `CREATE TABLE IF NOT EXISTS` on first call, so a fresh DB needs no migration. Reads `POSTGRES_URL`
   from the env via `@vercel/postgres`.
-- **`components/ui/`** — shadcn/ui primitives (badge, button, card, dialog, input, tabs, sonner).
+- **`components/ui/`** — shadcn/ui primitives (badge, button, card, dialog, input, tabs, sonner,
+  skeleton).
   These wrappers are **structural only**: they delegate all visuals to the bespoke classes in
   `globals.css` rather than imposing shadcn's default Tailwind skin, so the liquid-glass look and
   both themes survive. `button`/`badge` use `cva` to map a `variant` to an existing class
   (`.btn`/`.mag`/`.ghost`/`.clr`; `.pill`/`.lc-badge`/`.lc-grp`/`.livehd-pill`); `card`/`input`/`tabs`
-  just forward `className`. Prefer these primitives for new/changed UI — add a new one here when none
+  just forward `className`, and `skeleton` prepends the `.skel` shimmer class (sized per instance via
+  `className`/`style`). Prefer these primitives for new/changed UI — add a new one here when none
   fits, following the same delegate-to-CSS convention. `lib/utils.ts` holds the `cn()` helper (clsx +
   tailwind-merge); component config lives in `components.json`.
 - **`lib/site.ts`** — resolves the canonical `SITE_URL` once (env: `NEXT_PUBLIC_SITE_URL` →

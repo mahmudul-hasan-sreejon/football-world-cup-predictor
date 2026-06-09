@@ -1,0 +1,43 @@
+/* Skeleton placeholders — shimmering blocks shown by <Skeleton /> while the
+   predictor mounts and hydrates (see components/predictor/predictor-skeleton).
+   Sized per instance via inline width/height; this only owns the look. */
+.skel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+}
+.skel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.09),
+    transparent
+  );
+  animation: skel-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes skel-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+.light .skel {
+  background: rgba(6, 16, 15, 0.06);
+}
+.light .skel::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(6, 16, 15, 0.06),
+    transparent
+  );
+}
+@media (prefers-reduced-motion: reduce) {
+  .skel::after {
+    animation: none;
+  }
+}
