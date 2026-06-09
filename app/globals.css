@@ -139,7 +139,7 @@ h1 .p {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 0 2px 10px;
+  margin: 0 2px 4px;
 }
 .livehead .livedot {
   width: 9px;
@@ -170,7 +170,11 @@ h1 .p {
 .livebar {
   display: flex;
   gap: 10px;
-  padding: 2px;
+  /* Vertical padding so the cards' glass drop shadows + live glow render
+     inside the scroll container's clip region (overflow-x also clips the
+     vertical axis). No negative margin — the row clips cleanly at the page
+     gutter rather than bleeding past it. */
+  padding: 16px 4px 34px;
   overflow-x: auto;
   scrollbar-width: thin;
 }
@@ -305,7 +309,7 @@ h1 .p {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin: 20px 2px 2px;
+  margin: 0 2px 2px;
   color: var(--muted);
   font-size: 11px;
   font-weight: 700;
@@ -1428,6 +1432,15 @@ h1 .p {
   .bracket-scroll {
     overflow: visible;
     padding: 0;
+  }
+  /* Same treatment for the live bar: drop the scroll clip so shadows render
+     unclipped. Cards wrap instead of scrolling, so a large count can't
+     overflow the page. */
+  .livebar {
+    overflow: visible;
+    flex-wrap: wrap;
+    padding: 0;
+    row-gap: 24px;
   }
   .bracket {
     min-width: 0;
