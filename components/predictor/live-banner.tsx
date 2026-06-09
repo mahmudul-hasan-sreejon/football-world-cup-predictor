@@ -1,8 +1,9 @@
 import { Badge } from "@/components/ui/badge";
 import { statusLabel, type LiveMatch } from "@/lib/scores";
 
-// Format a match's kickoff for the card, in the viewer's local time, e.g.
-// "Jun 11 · 19:00". Returns "" for missing/unparseable dates so the line hides.
+// Format a match's kickoff for the card, in the viewer's local time with a
+// timezone label, e.g. "Jun 11 · 19:00 GMT+6". Returns "" for missing/
+// unparseable dates so the line hides.
 function kickoff(iso: string): string {
   if (!iso) return "";
   const d = new Date(iso);
@@ -14,6 +15,7 @@ function kickoff(iso: string): string {
   const time = d.toLocaleTimeString(undefined, {
     hour: "2-digit",
     minute: "2-digit",
+    timeZoneName: "short",
   });
   return `${date} · ${time}`;
 }
