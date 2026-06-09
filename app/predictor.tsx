@@ -415,6 +415,21 @@ export default function Predictor() {
               );
             })}
           </div>
+          <div className="thirdsbar">
+            <div className="counter">
+              <span>{done}</span>
+              <span className="of"> / 12 ranked</span>
+            </div>
+            <Button
+              variant="mag"
+              className={groupsComplete ? undefined : "ghost"}
+              disabled={!groupsComplete}
+              style={groupsComplete ? undefined : { opacity: 0.5 }}
+              onClick={groupsComplete ? () => go("thirds") : undefined}
+            >
+              Pick best thirds →
+            </Button>
+          </div>
         </TabsContent>
 
         {/* THIRDS */}
