@@ -135,14 +135,21 @@
     padding: 0;
   }
   /* Same treatment for the live bar: drop the scroll clip so shadows render
-     unclipped. Cards wrap instead of scrolling, so a large count can't
-     overflow the page. Keep vertical padding so the card shadows have room
-     above/below before the header and the section separator. */
+     unclipped. Switch from the scrolling flex strip to a 4-up grid (like the
+     Group Stage cards) so every row holds 4 equal-width cards. Keep vertical
+     padding so the card shadows have room above/below before the header and
+     the section separator. */
   .livebar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     overflow: visible;
-    flex-wrap: wrap;
     padding: 12px 0 32px;
     row-gap: 24px;
+  }
+  /* In the grid the fixed card min-width would force overflow; let the column
+     (1fr) size each card so the four share the row evenly. */
+  .livebar .livecard {
+    min-width: 0;
   }
   .bracket {
     min-width: 0;
