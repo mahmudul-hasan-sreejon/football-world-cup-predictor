@@ -16,8 +16,19 @@
   transition: 0.15s;
 }
 .third:hover {
-  border-color: var(--line2);
+  transform: translateY(-3px);
+  border-color: rgba(255, 45, 114, 0.55);
   background: var(--panel2);
+  box-shadow:
+    var(--sh),
+    0 0 0 1px rgba(255, 45, 114, 0.3);
+}
+.third.sel:hover {
+  transform: translateY(-3px);
+  border-color: var(--cyan);
+  box-shadow:
+    var(--sh),
+    0 0 0 1px rgba(39, 224, 200, 0.5) inset;
 }
 .third .fl {
   font-size: 24px;

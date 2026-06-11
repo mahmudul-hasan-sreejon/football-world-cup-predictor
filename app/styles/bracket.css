@@ -59,6 +59,18 @@
   background: var(--panel);
   overflow: hidden;
   box-shadow: var(--sh);
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    border-color 0.16s ease;
+}
+.match:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 45, 114, 0.55);
+  box-shadow:
+    var(--sh),
+    0 14px 30px rgba(0, 0, 0, 0.28),
+    0 0 0 1px rgba(255, 45, 114, 0.3);
 }
 .match .mn {
   font-family: "Sometype Mono", monospace;
@@ -136,6 +148,14 @@
 .match.final-m {
   border-color: rgba(246, 201, 69, 0.5);
   background: linear-gradient(180deg, rgba(246, 201, 69, 0.1), var(--panel));
+}
+.match.final-m:hover {
+  border-color: rgba(246, 201, 69, 0.85);
+  box-shadow:
+    var(--sh),
+    0 14px 30px rgba(0, 0, 0, 0.28),
+    0 0 0 1px rgba(246, 201, 69, 0.45),
+    0 0 24px rgba(246, 201, 69, 0.2);
 }
 .match.final-m .mn {
   color: var(--gold);
