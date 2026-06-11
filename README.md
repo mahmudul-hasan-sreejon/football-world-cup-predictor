@@ -130,7 +130,7 @@ still works, just without rate limiting. See [Abuse protection](#abuse-protectio
 When you attach a custom domain, set an environment variable so SEO metadata uses it:
 
 ```bash
-NEXT_PUBLIC_SITE_URL=https://your-domain.com/
+NEXT_PUBLIC_SITE_URL=https://fifaworldcuppredictor.online/
 ```
 
 (Note the trailing slash.) Or deploy from the CLI with `npx vercel` / `npx vercel --prod`.
