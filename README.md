@@ -85,12 +85,13 @@ to bloat the `subscribers` table (see `app/api/subscribe/route.ts` and `lib/rate
 
 ## Project structure
 
-- `app/layout.tsx` — root layout, SEO metadata, fonts, JSON-LD, no-flash theme script
+- `app/layout.tsx` — root layout, SEO metadata, fonts, JSON-LD (`WebApplication` + `SportsEvent` + `FAQPage`), no-flash theme script
 - `app/page.tsx` — static hero/footer, mounts the predictor
 - `app/confetti.ts` — dependency-free canvas confetti burst for the champion celebration
 - `app/globals.css` — stylesheet entry point; imports the per-concern partials under `app/styles/`
 - `app/icon.svg` — favicon (served as `/icon.svg`)
 - `app/opengraph-image.tsx` — dynamically generated 1200×630 social-share image (`next/og`)
+- `app/manifest.ts` — PWA web manifest (served as `/manifest.webmanifest`)
 - `app/robots.ts` / `app/sitemap.ts` — generated `robots.txt` and `sitemap.xml`
 - `app/api/subscribe/route.ts` — POST endpoint: rate-limits, validates input, and upserts a subscriber
 - `app/api/scores/route.ts` — GET endpoint the client polls for live scores (Redis-cached, demo-feed fallback)

@@ -41,9 +41,11 @@ There are no automated tests; verify changes by running `npm run build` (type ch
     state + the view-transition toggle) — the two effect-heavy concerns extracted as hooks.
 - **`app/page.tsx`** — server component: static hero/footer, mounts `<Predictor />` from
   `@/components/predictor/predictor`.
-- **`app/layout.tsx`** — SEO via the Metadata API, Google Fonts, JSON-LD, and a no-flash inline
-  theme script. `<html>`/`<body>` use `suppressHydrationWarning` because that script mutates the
-  class before hydration.
+- **`app/layout.tsx`** — SEO via the Metadata API (title template, keywords, author/publisher,
+  `googleBot` directives, Open Graph, Twitter), Google Fonts, a no-flash inline theme script, and
+  a JSON-LD `@graph` bundling `WebApplication` + `SportsEvent` + `FAQPage` (the FAQ entries are the
+  rich-result source — keep them in sync with the on-page copy). `<html>`/`<body>` use
+  `suppressHydrationWarning` because that script mutates the class before hydration.
 - **`app/globals.css`** — the stylesheet entry point: the Tailwind theme/utilities imports followed
   by `@import "./styles/*.css"`. The bespoke rules are **unlayered**, so cascade order is import
   order — keep the `@import` sequence intact, and keep `theme-light.css`/`glass.css`/`glass-light.css`
@@ -100,7 +102,8 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   `robots.ts`, and `sitemap.ts` — change the resolution logic here, not in those consumers.
 - **File-based metadata** — `app/icon.svg` (favicon), `app/opengraph-image.tsx` (dynamic OG image
   via `next/og`; auto-populates `og:image`/`twitter:image`, so don't also set them in `layout.tsx`),
-  `app/robots.ts`, and `app/sitemap.ts`. Next wires these into `<head>` / serves them by convention.
+  `app/manifest.ts` (PWA web manifest at `/manifest.webmanifest`, reusing `icon.svg`), `app/robots.ts`,
+  and `app/sitemap.ts`. Next wires these into `<head>` / serves them by convention.
 
 ### Key invariants
 
