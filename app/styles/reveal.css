@@ -1,0 +1,54 @@
+/* Windows-10-Start-tile "reveal" hover. A soft light tracks the cursor along
+   the card's border: a full-bleed pseudo painted with a radial gradient
+   centered on the cursor (`--mx`/`--my`, set per-card by useTileReveal), then
+   masked down to just the 1.5px border ring. The gradient is brightest under
+   the pointer and fades around the rest of the edge — the Fluent reveal look.
+   Layered on top of each card's own accent border/lift, so it composes with
+   the existing :hover states rather than replacing them. */
+.reveal {
+  position: relative;
+}
+.reveal::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: radial-gradient(
+    160px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.9),
+    rgba(255, 255, 255, 0) 70%
+  );
+  /* Show only the padding ring: a content-box mask XOR'd with a border-box one
+     punches out the interior, leaving the border band. */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+.reveal:hover::after {
+  opacity: 1;
+}
+
+/* On the light theme a white glow vanishes against pale cards — tint it with
+   the brand magenta so the reveal stays visible. */
+.light .reveal::after {
+  background: radial-gradient(
+    160px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 45, 114, 0.85),
+    rgba(255, 45, 114, 0) 70%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal::after {
+    transition: none;
+  }
+}

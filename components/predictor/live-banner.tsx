@@ -41,7 +41,10 @@ export function LiveBanner({
           const badge = statusLabel(m);
           const when = kickoff(m.utcDate);
           return (
-            <article className={`livecard ${badge.toLowerCase()}`} key={m.id}>
+            <article
+              className={`livecard reveal ${badge.toLowerCase()}`}
+              key={m.id}
+            >
               <div className="lc-top">
                 <Badge variant="status">{badge}</Badge>
                 {m.group && <Badge variant="group">Grp {m.group}</Badge>}

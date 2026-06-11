@@ -19,6 +19,7 @@
 @import "./styles/champion.css"; /* champion banner */
 @import "./styles/modal.css"; /* sign-up dialog */
 @import "./styles/bracket.css"; /* stage 3: knockout bracket */
+@import "./styles/reveal.css"; /* cursor-following tile border highlight */
 @import "./styles/footer.css"; /* data note + footer */
 @import "./styles/skeleton.css"; /* loading placeholders (pre-mount) */
 @import "./styles/responsive.css"; /* mobile-first media queries */

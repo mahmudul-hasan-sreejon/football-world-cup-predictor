@@ -135,7 +135,7 @@ export function KnockoutStage({
                             : "Match " + m.id;
                         return (
                           <div
-                            className={`match${isFinal ? " final-m" : ""}${isThird ? " third-m" : ""}`}
+                            className={`match reveal${isFinal ? " final-m" : ""}${isThird ? " third-m" : ""}`}
                             key={m.id}
                           >
                             <div className="mn">{tag}</div>

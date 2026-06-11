@@ -38,7 +38,7 @@ export function GroupsStage({
         {GROUPS.map((g) => {
           const o = order[g] || [];
           return (
-            <div className="gcard" key={g}>
+            <div className="gcard reveal" key={g}>
               <div className="gh">
                 <span className="gt">
                   Group <span>{g}</span>

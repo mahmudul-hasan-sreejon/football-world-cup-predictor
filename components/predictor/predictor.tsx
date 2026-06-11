@@ -35,6 +35,7 @@ import { SubscribeDialog } from "./subscribe-dialog";
 import { ThirdsStage } from "./thirds-stage";
 import { useLiveScores } from "./use-live-scores";
 import { useTheme } from "./use-theme";
+import { useTileReveal } from "./use-tile-reveal";
 
 export default function Predictor() {
   const [stage, setStage] = useState<string>("groups");
@@ -55,6 +56,7 @@ export default function Predictor() {
 
   const { theme, toggleTheme } = useTheme();
   const { live, demoFeed } = useLiveScores();
+  useTileReveal();
 
   useEffect(() => {
     setMounted(true);

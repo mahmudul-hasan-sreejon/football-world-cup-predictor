@@ -57,7 +57,7 @@ export function ThirdsStage({
               const sel = thirds.has(g);
               return (
                 <div
-                  className={`third${sel ? " sel" : ""}${!sel && full ? " dis" : ""}`}
+                  className={`third reveal${sel ? " sel" : ""}${!sel && full ? " dis" : ""}`}
                   key={g}
                   onClick={() => onToggleThird(g)}
                 >
