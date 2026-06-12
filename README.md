@@ -52,13 +52,23 @@ theme preference is saved client-side, in `localStorage` under `wc26-theme`.
 ## Live scores
 
 The **Live & Latest Results** strip and the **Fixtures** section are fed by one upstream source —
-football-data.org — behind a caching layer designed so they never go blank and the free API tier is
-never exceeded, no matter how many people are on the site (see `app/api/scores/route.ts` and
-`lib/scores.ts`):
+football-data.org — behind a tiered caching layer designed so they never go blank, the free API
+tier is never exceeded, and **upstream is only called while a match may actually be in play** (see
+`app/api/scores/route.ts`, `lib/scores.ts`, and `lib/fixtures.ts`):
 
-- **Fresh cache** — upstream responses are cached in Redis for 45 seconds, so upstream sees at most
-  ~1 request per 45s regardless of traffic. A `Cache-Control: s-maxage=30` header additionally lets
-  Vercel's edge absorb polling bursts without invoking the function.
+- **Finished matches** — a result is immutable once the final whistle goes, so it's persisted to
+  the `fixtures` table in Postgres (keyed by the match's serial id, in tournament order) and served
+  from a 24-hour Redis cache in front of it; a cache miss falls back to the database and reseeds
+  the cache. Finished matches never trigger an upstream call again.
+- **Upcoming matches** — haven't been played, so there's nothing to fetch: they're answered from a
+  12-hour Redis snapshot of the schedule taken at the last real fetch. The snapshot's expiry is the
+  only reason upstream is touched between matchdays (about twice a day, to pick up schedule changes
+  and knockout pairings as they firm up).
+- **Ongoing matches** — the only tier that calls the API, gated by a pure check ("is some
+  non-finished match live, or within ~3.5h of kickoff?"). During a live window, upstream responses
+  are cached in Redis for 45 seconds, so upstream sees at most ~1 request per 45s regardless of
+  traffic. A `Cache-Control: s-maxage=30` header additionally lets Vercel's edge absorb polling
+  bursts without invoking the function.
 - **Stampede lock** — when the fresh cache expires, a short Redis lock ensures exactly one request
   refreshes upstream while concurrent ones are served from the stale copy.
 - **Stale fallback** — every good payload is also kept for 6 hours. If a refresh is in flight or
@@ -84,9 +94,9 @@ cp .env.example .env.local
   `sitemap.xml`. On Vercel it's resolved automatically (see [Deployment](#deployment)); locally it
   defaults to `http://localhost:3000/`.
 - `POSTGRES_URL` — Vercel Postgres connection string used by the `/api/subscribe` route to store
-  newsletter sign-ups. On Vercel it's injected automatically when you attach a Postgres store; set it
-  locally only to test subscriptions. The `subscribers` table is created on first use, so no
-  migration step is needed.
+  newsletter sign-ups and by `/api/scores` to persist finished match results (the `fixtures`
+  table). On Vercel it's injected automatically when you attach a Postgres store; set it locally
+  only to test those paths. Both tables are created on first use, so no migration step is needed.
 - `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` — Upstash Redis REST credentials used to
   rate-limit the `/api/subscribe` route per IP (see [Abuse protection](#abuse-protection)) and to
   cache live scores for `/api/scores` (see [Live scores](#live-scores)). On Vercel
@@ -135,7 +145,9 @@ to bloat the `subscribers` table (see `app/api/subscribe/route.ts` and `lib/rate
 - `app/manifest.ts` — PWA web manifest (served as `/manifest.webmanifest`)
 - `app/robots.ts` / `app/sitemap.ts` — generated `robots.txt` and `sitemap.xml`
 - `app/api/subscribe/route.ts` — POST endpoint: rate-limits, validates input, and upserts a subscriber
-- `app/api/scores/route.ts` — GET endpoint the client polls for live scores (Redis-cached, demo-feed fallback)
+- `app/api/scores/route.ts` — GET endpoint the client polls for live scores (tiered: finished from
+  cache/Postgres, upcoming from a schedule snapshot, the API called only while a match may be live;
+  demo-feed fallback)
 - `components/predictor/` — the interactive UI: a stateful container (`predictor.tsx`) plus presentational
   stages (`groups-stage`, `thirds-stage`, `knockout-stage`), `nav`, `live-banner`, `subscribe-dialog`, the
   pre-mount `predictor-skeleton`, and the `ad-slot` wrapper for Adsterra units (the shared
@@ -147,6 +159,8 @@ to bloat the `subscribers` table (see `app/api/subscribe/route.ts` and `lib/rate
 - `lib/faq.ts` — FAQ copy shared by the visible FAQ section and the `FAQPage` JSON-LD, so the
   structured data always matches the on-page text
 - `lib/scores.ts` — live-score domain layer: normalizes football-data.org matches and the demo feed
+- `lib/fixtures.ts` — Vercel Postgres data layer for finished match results (insert-once by match
+  serial + table bootstrap)
 - `lib/subscribers.ts` — Vercel Postgres data layer for newsletter sign-ups (unique-email insert + table bootstrap)
 - `lib/rate-limit.ts` — durable per-IP rate limiter for the subscribe route (Upstash Redis)
 - `lib/redis.ts` — shared Upstash Redis client, reused by the rate limiter and the live-scores cache
@@ -162,10 +176,11 @@ Vercel auto-detects Next.js — no build settings needed. The canonical URL (and
 `robots.txt`, and `sitemap.xml` derived from it) fills in automatically from Vercel's
 `VERCEL_PROJECT_PRODUCTION_URL`; see `lib/site.ts` for the resolution order.
 
-To enable the newsletter sign-up, attach a Postgres store under the project's **Storage** tab.
-Vercel injects `POSTGRES_URL` automatically and the `subscribers` table is created on first use, so
-no migration step is needed. Skip this and the app still works — only the `/api/subscribe` route
-errors on submit.
+To enable the newsletter sign-up and the durable store of finished match results, attach a
+Postgres store under the project's **Storage** tab. Vercel injects `POSTGRES_URL` automatically
+and the `subscribers`/`fixtures` tables are created on first use, so no migration step is needed.
+Skip this and the app still works — the `/api/subscribe` route errors on submit, and finished
+results lean on the Redis caches and upstream API alone.
 
 To rate-limit that endpoint in production, also attach an **Upstash for Redis** store from the same
 **Storage** tab. Vercel injects the REST credentials automatically (`KV_REST_API_URL` /

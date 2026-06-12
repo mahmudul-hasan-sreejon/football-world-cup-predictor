@@ -97,19 +97,25 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   endpoint. In order: rejects oversized bodies (413), rate-limits per IP (429), drops honeypot
   hits (the hidden `website` field) as silent fake-success, caps/validates the email, and coerces
   `champion` to a known `TEAM_NAMES` value or `null`. Only then calls `addSubscriber()`.
-- **`app/api/scores/route.ts`** — `GET` handler the client polls for live scores. Serves
-  `{ matches, demo, updatedAt }` from the Redis key `wc:matches` (45s TTL); every good payload is
-  also written to `wc:matches:stale` (6h TTL) as the last-known-good copy. On a cold/expired
-  cache, one request takes a short `wc:matches:lock` and refreshes upstream (stampede guard);
-  concurrent losers serve the stale copy instantly, waiting briefly for the winner's write only
-  when no stale copy exists yet. A failed refresh releases the lock (so the next poll retries
-  immediately) and likewise serves stale. The truly-empty fallback — possible only on a cold start
-  with nothing cached during an upstream failure — goes out with `Cache-Control: no-store`, so an
-  empty payload is never edge-cached over real data; real payloads carry `s-maxage=30` to let
-  Vercel's edge absorb bursts without invoking the function. The 45s TTL caps upstream calls
-  regardless of traffic, keeping us under the free 10 req/min limit. When `FOOTBALL_API_KEY` is
-  unset it returns `demoMatches()` with `demo: true` (uncached) so the section still renders;
-  falls back to a direct fetch when `redis` is null but a key is present.
+- **`app/api/scores/route.ts`** — `GET` handler the client polls for live scores, serving
+  `{ matches, demo, updatedAt }`. The tournament is tiered so upstream is called **only when a
+  match may be in play** (gated by `anyPotentiallyLive()`): finished results are immutable and
+  come from Redis `wc:fixtures:done` (24h TTL) falling back to the Postgres `fixtures` table
+  (`lib/fixtures.ts`, reseeding Redis on the way out); not-yet-finished matches are answered from
+  the `wc:schedule` snapshot (12h TTL — its expiry is the only reason upstream is called between
+  matchdays, picking up schedule/pairing changes). The snapshot stores a `finished` count so the
+  quiet path can detect an incomplete finished set (expired cache + missing DB rows) and force a
+  real fetch instead of serving a hole. During a live window the original machinery applies:
+  payloads serve from `wc:matches` (45s TTL, capping upstream calls far under the free 10 req/min
+  limit regardless of traffic), every good payload also lands in `wc:matches:stale` (6h) as
+  last-known-good, and on a cold cache one request takes `wc:matches:lock` and refreshes upstream
+  (stampede guard) — losers serve stale; a failed refresh releases the lock and serves stale. Each
+  successful fetch splits the payload: finished matches are persisted via `saveFinished()` and
+  recached, the rest become the new schedule snapshot. The truly-empty fallback goes out with
+  `Cache-Control: no-store`, so an empty payload is never edge-cached over real data; real
+  payloads carry `s-maxage=30` to let Vercel's edge absorb bursts without invoking the function.
+  When `FOOTBALL_API_KEY` is unset it returns `demoMatches()` with `demo: true` (uncached) so the
+  section still renders; falls back to a direct fetch when `redis` is null but a key is present.
 - **`lib/redis.ts`** — the shared Upstash Redis client (`redis`), reused by both the rate limiter
   and the live-scores cache. Reads `UPSTASH_REDIS_REST_URL`/`_TOKEN` (or the `KV_REST_API_*`
   Marketplace pair); exports `null` when unset so callers degrade gracefully (local dev).
@@ -126,12 +132,23 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   carries the upstream `stage` id (`stageTag()` maps it to a short knockout label for the
   fixtures list; null on cached payloads that predate the field).
   `upcomingOrLive(matches, now, days=3)` is the pure filter for "in
-  play, or kicking off within the next `days` days". The `useLiveScores` hook
+  play, or kicking off within the next `days` days"; `isFinished(m)` marks the immutable results
+  worth persisting, and `anyPotentiallyLive(matches, now)` is the pure gate the scores route uses
+  to decide whether upstream needs calling at all (live in the snapshot, or kicked off within the
+  last ~3.5h and not finished). The `useLiveScores` hook
   (`components/use-live-scores.ts`) polls `/api/scores` (paused while the tab is hidden,
   fast cadence only while a match is live); an empty response never wipes scores already on screen —
   the hook keeps them and quick-retries a few times before resuming the regular cadence. It's
   mounted independently by its two consumers: `LiveBanner` renders the strip, `FixtureList` the
   full schedule.
+- **`lib/fixtures.ts`** — Vercel Postgres data layer for finished match results. The `fixtures`
+  table is keyed by the upstream football-data.org match id (every FIFA match has a stable
+  serial); `saveFinished()` diffs against stored ids and inserts only new results (finished
+  results are immutable, existing rows are never rewritten), `getFinishedFromDb()` returns them
+  in tournament order (kickoff, then id), rebuilding the `LiveMatch` shape with flags recomputed
+  from team names. Lazily runs `CREATE TABLE IF NOT EXISTS` on first call (no migration step) and
+  no-ops/returns `[]` when `POSTGRES_URL` is unset, mirroring `lib/redis.ts`'s graceful
+  degradation.
 - **`lib/subscribers.ts`** — Vercel Postgres data layer. `addSubscriber()` inserts on the unique
   `email` with `ON CONFLICT DO NOTHING RETURNING id`, returning `true` for a fresh sign-up and
   `false` when the email already exists (the route turns `false` into a 409). It lazily runs

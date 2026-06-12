@@ -24,8 +24,36 @@ const DONE_STATUSES = new Set(["FINISHED", "AWARDED"]);
 // Short badge for a match's state, as shown on each card: LIVE / FT / SOON.
 export function statusLabel(m: LiveMatch): "LIVE" | "FT" | "SOON" {
   if (m.isLive) return "LIVE";
-  if (DONE_STATUSES.has(m.status)) return "FT";
+  if (isFinished(m)) return "FT";
   return "SOON";
+}
+
+// A finished match's result is immutable — these are the rows worth persisting
+// to the fixtures table and serving from cache/DB instead of the upstream API.
+export function isFinished(m: LiveMatch): boolean {
+  return DONE_STATUSES.has(m.status);
+}
+
+// How long after kickoff a match could still plausibly be in play. Knockout
+// ties can run ~3h from kickoff (ET + penalties + breaks); the extra slack
+// covers delayed kickoffs without keeping the API polling all day.
+const MATCH_WINDOW_MS = 3.5 * 60 * 60 * 1000;
+
+// True when some match may be in play right now, judged from a (possibly
+// stale) snapshot: either the snapshot already says it's live, or its kickoff
+// has passed, it isn't finished, and we're still inside the match window.
+// This is the gate for calling the upstream API at all — outside it, finished
+// results come from cache/DB and upcoming fixtures from the snapshot. `now`
+// is passed in (never read here) so this stays pure and testable.
+export function anyPotentiallyLive(matches: LiveMatch[], now: string): boolean {
+  const t = new Date(now).getTime();
+  return matches.some((m) => {
+    if (isFinished(m)) return false;
+    if (m.isLive) return true;
+    if (!m.utcDate) return false;
+    const kickoff = new Date(m.utcDate).getTime();
+    return t >= kickoff && t <= kickoff + MATCH_WINDOW_MS;
+  });
 }
 
 // Short round tag for a fixture row. Group games are tagged with their group
@@ -74,7 +102,9 @@ function canonicalName(raw: string): string {
   return NAME_ALIASES[raw.trim().toLowerCase()] ?? raw.trim();
 }
 
-function flagFor(name: string): string | null {
+// Exported for lib/fixtures.ts, which rebuilds LiveMatch objects from DB rows
+// (flags are derived from team names, so they're recomputed, not stored).
+export function flagFor(name: string): string | null {
   return FLAG_BY_NAME[name.toLowerCase()] ?? null;
 }
 
