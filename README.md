@@ -40,15 +40,21 @@ cached `/api/scores` endpoint; it falls back to a curated demo feed when no foot
 configured (see [Live scores](#live-scores)). The whole predictor renders a shimmering skeleton until
 it mounts on the client, so the real picks and live data fade in without a layout pop-in.
 
+Below the predictor, the page also serves as a reference: a crawlable summary of all 12 groups, a
+**Fixtures** section with the full 104-match schedule (grouped by day in your local time, with live
+scores updating in place — fed by the same cached endpoint), and an FAQ. A sticky top navbar links
+to each section — behind a hamburger menu on phones — and houses the light/dark theme toggle.
+
 Your bracket picks live in memory only and reset on reload. **Auto-pick by ranking** fills the entire
 bracket from rough team-strength ratings as an editable starting point, and **Reset** clears it. The
 theme preference is saved client-side, in `localStorage` under `wc26-theme`.
 
 ## Live scores
 
-The **Live & Latest Results** strip is fed by one upstream source — football-data.org — behind a
-caching layer designed so the banner never goes blank and the free API tier is never exceeded, no
-matter how many people are on the site (see `app/api/scores/route.ts` and `lib/scores.ts`):
+The **Live & Latest Results** strip and the **Fixtures** section are fed by one upstream source —
+football-data.org — behind a caching layer designed so they never go blank and the free API tier is
+never exceeded, no matter how many people are on the site (see `app/api/scores/route.ts` and
+`lib/scores.ts`):
 
 - **Fresh cache** — upstream responses are cached in Redis for 45 seconds, so upstream sees at most
   ~1 request per 45s regardless of traffic. A `Cache-Control: s-maxage=30` header additionally lets
@@ -64,7 +70,7 @@ matter how many people are on the site (see `app/api/scores/route.ts` and `lib/s
   minutes otherwise, pausing entirely while the tab is hidden. A transient empty response never
   wipes scores already on screen; the hook keeps them and quick-retries within seconds.
 - **Demo feed** — with no `FOOTBALL_API_KEY` configured the endpoint serves a curated stand-in
-  feed, flagged with a "Demo feed" badge in the UI, so the section still renders in local dev.
+  feed, flagged with a "Demo feed" badge in the UI, so both sections still render in local dev.
 
 ## Configuration
 

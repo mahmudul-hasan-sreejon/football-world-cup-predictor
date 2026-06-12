@@ -88,7 +88,9 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   last so they override the base look. The partials under **`app/styles/`** are split by concern
   (`base`, `topnav`, `header`, `live-scores`, `nav`, `stage`, `groups`, `thirds`, `champion`, `modal`,
   `bracket`, `footer`, `seo`, `fixtures`, `adslot`, `skeleton`, `responsive`, plus the theme/glass overrides). Theming is driven by a `light`
-  class on `<html>`.
+  class on `<html>`. Every top-level section heading (live banner, the three predictor stages,
+  groups summary, fixtures, FAQ) shares the `.sec-title` rule in `base.css` — restyle headings
+  there, not per section.
 - **`app/confetti.ts`** — dependency-free canvas confetti (`fireConfetti()`); client-only, self-cleans
   the canvas, and no-ops under `prefers-reduced-motion`. Fired from `predictor.tsx` on champion.
 - **`app/api/subscribe/route.ts`** — `POST` handler and the abuse boundary for this public
@@ -125,10 +127,11 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   fixtures list; null on cached payloads that predate the field).
   `upcomingOrLive(matches, now, days=3)` is the pure filter for "in
   play, or kicking off within the next `days` days". The `useLiveScores` hook
-  (`components/predictor/use-live-scores.ts`) polls `/api/scores` (paused while the tab is hidden,
+  (`components/use-live-scores.ts`) polls `/api/scores` (paused while the tab is hidden,
   fast cadence only while a match is live); an empty response never wipes scores already on screen —
-  the hook keeps them and quick-retries a few times before resuming the regular cadence.
-  `LiveBanner` renders the strip.
+  the hook keeps them and quick-retries a few times before resuming the regular cadence. It's
+  mounted independently by its two consumers: `LiveBanner` renders the strip, `FixtureList` the
+  full schedule.
 - **`lib/subscribers.ts`** — Vercel Postgres data layer. `addSubscriber()` inserts on the unique
   `email` with `ON CONFLICT DO NOTHING RETURNING id`, returning `true` for a fresh sign-up and
   `false` when the email already exists (the route turns `false` into a 409). It lazily runs
