@@ -22,9 +22,9 @@ export function SiteNav() {
         </a>
         <NavMenu>
           <a href="#live">Live Results</a>
-          <a href="#prediction">Prediction</a>
+          <a href="#prediction">Predictions</a>
           <a href="#groups">Groups</a>
-          <a href="#fixture">Fixture</a>
+          <a href="#fixture">Fixtures</a>
           <a href="#faq">FAQ</a>
           <ThemeToggle />
         </NavMenu>
