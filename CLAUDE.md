@@ -48,17 +48,23 @@ There are no automated tests; verify changes by running `npm run build` (type ch
     `localhost`/unapproved domains, so the slot is empty in dev — verify on the live domain.
 - **`app/page.tsx`** — server component: static hero/footer, mounts `<Predictor />` from
   `@/components/predictor/predictor`, and renders an `<AdSlot />` (native banner) above the footer.
+  Between the data note and the ad it renders two static, crawlable sections — the 12-group/48-team
+  summary (from `TEAMS`/`GROUPS` via `@/lib/bracket`) and the FAQ (from `lib/faq.ts`). These are
+  the page's indexable copy: the predictor itself is client-only (the server renders only its
+  skeleton). Styled by `app/styles/seo.css`.
 - **`app/layout.tsx`** — SEO via the Metadata API (title template, keywords, author/publisher,
   `googleBot` directives, Open Graph, Twitter), Google Fonts, a no-flash inline theme script, and
-  a JSON-LD `@graph` bundling `WebApplication` + `SportsEvent` + `FAQPage` (the FAQ entries are the
-  rich-result source — keep them in sync with the on-page copy). `<html>`/`<body>` use
+  a JSON-LD `@graph` bundling `WebApplication` + `SportsEvent` + `FAQPage`. The FAQ entries live in
+  **`lib/faq.ts`**, shared with the visible FAQ section in `page.tsx`, so the structured data and
+  the on-page copy stay in sync by construction (Google only honors FAQ markup whose copy is
+  visible on the page). `<html>`/`<body>` use
   `suppressHydrationWarning` because that script mutates the class before hydration.
 - **`app/globals.css`** — the stylesheet entry point: the Tailwind theme/utilities imports followed
   by `@import "./styles/*.css"`. The bespoke rules are **unlayered**, so cascade order is import
   order — keep the `@import` sequence intact, and keep `theme-light.css`/`glass.css`/`glass-light.css`
   last so they override the base look. The partials under **`app/styles/`** are split by concern
   (`base`, `header`, `live-scores`, `nav`, `stage`, `groups`, `thirds`, `champion`, `modal`,
-  `bracket`, `footer`, `adslot`, `skeleton`, `responsive`, plus the theme/glass overrides). Theming is driven by a `light`
+  `bracket`, `footer`, `seo`, `adslot`, `skeleton`, `responsive`, plus the theme/glass overrides). Theming is driven by a `light`
   class on `<html>`.
 - **`app/confetti.ts`** — dependency-free canvas confetti (`fireConfetti()`); client-only, self-cleans
   the canvas, and no-ops under `prefers-reduced-motion`. Fired from `predictor.tsx` on champion.

@@ -1,0 +1,65 @@
+/* Server-rendered content sections below the predictor (groups summary + FAQ).
+   These exist for crawlers as much as for readers — the predictor itself is
+   client-only, so this is the page's static, indexable copy. */
+.seo-block {
+  margin-top: 34px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.seo-title {
+  font-family: "Anton", sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: clamp(20px, 3.4vw, 28px);
+  letter-spacing: 0.01em;
+  margin: 0;
+}
+.seo-sub {
+  margin: 6px 0 0;
+  color: var(--muted2);
+  font-size: 14.5px;
+  max-width: 70ch;
+}
+.seo-groups {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+.seo-group {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+.seo-group h3 {
+  margin: 0 0 8px;
+  font-family: "Sometype Mono", monospace;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.seo-group ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.seo-group li {
+  font-size: 13.5px;
+  color: var(--muted2);
+  line-height: 1.7;
+}
+.seo-faq-item h3 {
+  margin: 16px 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.seo-faq-item p {
+  margin: 0;
+  color: var(--muted2);
+  font-size: 13.5px;
+  line-height: 1.6;
+  max-width: 80ch;
+}

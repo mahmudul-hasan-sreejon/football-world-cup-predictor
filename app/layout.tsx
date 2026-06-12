@@ -1,3 +1,4 @@
+import { FAQS } from "@/lib/faq";
 import { SITE_URL } from "@/lib/site";
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
@@ -102,40 +103,13 @@ const jsonLd = {
     },
     {
       "@type": "FAQPage",
-      mainEntity: [
-        {
-          "@type": "Question",
-          name: "How does the World Cup 2026 bracket predictor work?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Rank the teams in all 12 groups, pick the 8 best third-placed teams that advance, and the Round of 32 is automatically seeded using FIFA's official Annex C allocation. From there you click through the knockout stage to crown your champion.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "What is FIFA's Annex C seeding?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Annex C is FIFA's official 495-combination table that determines which Round-of-32 slot each of the 8 best third-placed teams fills, based on exactly which groups those teams come from.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "When and where is the 2026 FIFA World Cup?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "The 2026 FIFA World Cup runs from June 11 to July 19, 2026, hosted across the United States, Canada, and Mexico, with the Final at MetLife Stadium in New Jersey. It is the first 48-team World Cup, with 12 groups and 104 matches.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "Is the bracket predictor free to use?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Yes. The FIFA World Cup 2026 Bracket Predictor is completely free and runs in your browser — no account or sign-up is required to build your bracket.",
-          },
-        },
-      ],
+      // Sourced from lib/faq.ts, which also renders the visible FAQ section
+      // on the page — Google only honors FAQ markup whose copy is on-page.
+      mainEntity: FAQS.map(({ q, a }) => ({
+        "@type": "Question",
+        name: q,
+        acceptedAnswer: { "@type": "Answer", text: a },
+      })),
     },
   ],
 };

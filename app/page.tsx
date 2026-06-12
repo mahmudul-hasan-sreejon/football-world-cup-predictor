@@ -1,5 +1,7 @@
 import Predictor from "@/components/predictor/predictor";
 import { AdSlot } from "@/components/predictor/ad-slot";
+import { GROUPS, TEAMS } from "@/lib/bracket";
+import { FAQS } from "@/lib/faq";
 
 export default function Home() {
   return (
@@ -36,6 +38,44 @@ export default function Home() {
         are rough approximations to give you an editable starting point — not
         predictions. Your picks reset on reload.
       </p>
+
+      <section className="seo-block" aria-labelledby="groups-title">
+        <h2 id="groups-title" className="seo-title">
+          The 12 Groups of the 2026 World Cup
+        </h2>
+        <p className="seo-sub">
+          All 48 qualified teams as drawn at the Final Draw on December 5,
+          2025 — the starting point for every bracket prediction.
+        </p>
+        <div className="seo-groups">
+          {GROUPS.map((g) => (
+            <div className="seo-group" key={g}>
+              <h3>Group {g}</h3>
+              <ul>
+                {TEAMS[g].map(([name, flag]) => (
+                  <li key={name}>
+                    <span aria-hidden="true">{flag}</span> {name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="seo-block" aria-labelledby="faq-title">
+        <h2 id="faq-title" className="seo-title">
+          Frequently Asked Questions
+        </h2>
+        <div className="seo-faq">
+          {FAQS.map(({ q, a }) => (
+            <div className="seo-faq-item" key={q}>
+              <h3>{q}</h3>
+              <p>{a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <AdSlot
         id="d38de939263cc5574d2e2ae540e86ecc"
