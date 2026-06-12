@@ -5,14 +5,27 @@ import { Skeleton } from "@/components/ui/skeleton";
 // <Skeleton /> blocks where content goes, so the shape matches the live UI and
 // there's no pop-in when the real stages take over.
 
-const GROUP_LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
+const GROUP_LETTERS = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+  "K",
+  "L",
+];
 
 function LiveBannerSkeleton() {
   return (
     <section id="live" className="livewrap" aria-hidden="true">
       <div className="livehead">
         <span className="livedot" />
-        <Skeleton style={{ height: 13, width: 170 }} />
+        <Skeleton style={{ height: 28, width: 280 }} />
       </div>
       <div className="livebar">
         {Array.from({ length: 5 }, (_, i) => (
@@ -34,9 +47,7 @@ function LiveBannerSkeleton() {
           </article>
         ))}
       </div>
-      <div className="sectionsep" role="separator">
-        <span>Make your predictions</span>
-      </div>
+      <div className="sectionsep" role="separator" />
     </section>
   );
 }
@@ -65,8 +76,10 @@ function GroupsStageSkeleton() {
     <div className="stage show" aria-hidden="true">
       <div className="stage-head">
         <div>
-          <Skeleton style={{ height: 24, width: 180, marginBottom: 10 }} />
-          <Skeleton style={{ height: 13, width: "min(560px, 90%)", marginBottom: 6 }} />
+          <Skeleton style={{ height: 28, width: 200, marginBottom: 10 }} />
+          <Skeleton
+            style={{ height: 13, width: "min(560px, 90%)", marginBottom: 6 }}
+          />
           <Skeleton style={{ height: 13, width: "min(440px, 75%)" }} />
         </div>
         <Skeleton style={{ height: 28, width: 150, borderRadius: 999 }} />
@@ -81,9 +94,13 @@ function GroupsStageSkeleton() {
             <div className="tlist">
               {Array.from({ length: 4 }, (_, i) => (
                 <div className="team" key={i}>
-                  <Skeleton style={{ height: 17, width: 17, borderRadius: 4 }} />
+                  <Skeleton
+                    style={{ height: 17, width: 17, borderRadius: 4 }}
+                  />
                   <Skeleton style={{ height: 13, flex: "1 1 0" }} />
-                  <Skeleton style={{ height: 18, width: 18, borderRadius: 6 }} />
+                  <Skeleton
+                    style={{ height: 18, width: 18, borderRadius: 6 }}
+                  />
                 </div>
               ))}
             </div>

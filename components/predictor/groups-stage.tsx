@@ -23,7 +23,7 @@ export function GroupsStage({
     <TabsContent value="groups" className="stage show">
       <div className="stage-head">
         <div>
-          <h2>Group Stage</h2>
+          <h2 className="sec-title">Group Stage</h2>
           <p>
             Tap teams in your predicted finishing order — 1st, 2nd, 3rd. The last
             spot fills in automatically. Top two of each group advance; third

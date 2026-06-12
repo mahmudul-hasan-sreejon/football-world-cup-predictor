@@ -65,7 +65,7 @@ export function KnockoutStage({
     <TabsContent value="ko" className="stage show">
       <div className="stage-head">
         <div>
-          <h2>Knockout Bracket</h2>
+          <h2 className="sec-title">Knockout Bracket</h2>
           <p>
             Single elimination, Round of 32 through the Final. Tap the team you
             predict to win each tie — winners advance automatically. Change an

@@ -27,7 +27,7 @@ export function ThirdsStage({
     <TabsContent value="thirds" className="stage show">
       <div className="stage-head">
         <div>
-          <h2>Best Third-Placed Teams</h2>
+          <h2 className="sec-title">Best Third-Placed Teams</h2>
           <p>
             Eight of the twelve group-stage third-placed teams advance to the
             Round of 32. Pick the <b>8</b> you think make it. Which groups they

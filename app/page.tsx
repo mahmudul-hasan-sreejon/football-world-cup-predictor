@@ -40,7 +40,7 @@ export default function Home() {
       </p>
 
       <section id="groups" className="seo-block" aria-labelledby="groups-title">
-        <h2 id="groups-title" className="seo-title">
+        <h2 id="groups-title" className="sec-title">
           The 12 Groups of the 2026 World Cup
         </h2>
         <p className="seo-sub">
@@ -64,7 +64,7 @@ export default function Home() {
       </section>
 
       <section id="faq" className="seo-block" aria-labelledby="faq-title">
-        <h2 id="faq-title" className="seo-title">
+        <h2 id="faq-title" className="sec-title">
           Frequently Asked Questions
         </h2>
         <div className="seo-faq">

@@ -30,10 +30,14 @@ export function LiveBanner({
   demoFeed: boolean;
 }) {
   return (
-    <section id="live" className="livewrap" aria-label="Live and upcoming scores">
+    <section
+      id="live"
+      className="livewrap"
+      aria-label="Live and upcoming scores"
+    >
       <div className="livehead">
         <span className="livedot" aria-hidden="true" />
-        <h2 className="livehd-title">Live &amp; Latest Results</h2>
+        <h2 className="sec-title">Live &amp; Latest Results</h2>
         {demoFeed && <Badge variant="demo">Demo feed</Badge>}
       </div>
       <div className="livebar">
@@ -70,9 +74,7 @@ export function LiveBanner({
           );
         })}
       </div>
-      <div className="sectionsep" role="separator">
-        <span>Make your predictions</span>
-      </div>
+      <div className="sectionsep" role="separator" />
     </section>
   );
 }
