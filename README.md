@@ -113,8 +113,9 @@ to bloat the `subscribers` table (see `app/api/subscribe/route.ts` and `lib/rate
 ## Project structure
 
 - `app/layout.tsx` — root layout, SEO metadata, fonts, JSON-LD (`WebApplication` + `SportsEvent` + `FAQPage`), no-flash theme script; renders the sticky top navbar above the page
-- `components/site-nav.tsx` — the top navbar: favicon + site name, anchor links to the page sections
-  (`#live`, `#prediction`, `#groups`, `#fixture`, `#faq`), and the theme toggle (`theme-toggle.tsx`,
+- `components/site-nav.tsx` — the sticky top navbar: favicon + site name, anchor links to the page
+  sections (`#live`, `#prediction`, `#groups`, `#fixture`, `#faq`) — behind a hamburger dropdown on
+  phones (`nav-menu.tsx`), inline on wider screens — and the theme toggle (`theme-toggle.tsx`,
   backed by the shared `use-theme` hook)
 - `components/fixture-list.tsx` — the full tournament schedule (all 104 matches grouped by day, live
   scores in place), fed by the shared `use-live-scores` hook; the body of the `#fixture` section

@@ -1,12 +1,14 @@
 import Image from "next/image";
+import { NavMenu } from "./nav-menu";
 import { ThemeToggle } from "./theme-toggle";
 
 // Sticky top navbar — static site chrome rendered by the root layout (server
-// component; the theme toggle is its one client island). The menu items are
-// in-page anchors to the index sections: the live-scores strip (#live), the
-// predictor (#prediction), the server-rendered groups summary (#groups), the
-// tournament schedule (#fixture), and the FAQ (#faq). Styled by
-// app/styles/topnav.css.
+// component; the theme toggle and the hamburger shell are its client
+// islands). The menu items are in-page anchors to the index sections: the
+// live-scores strip (#live), the predictor (#prediction), the server-rendered
+// groups summary (#groups), the tournament schedule (#fixture), and the FAQ
+// (#faq). On phones the links live in NavMenu's dropdown panel; from 600px up
+// they lay out inline. Styled by app/styles/topnav.css.
 export function SiteNav() {
   return (
     <nav className="topnav" aria-label="Site">
@@ -17,13 +19,13 @@ export function SiteNav() {
             FIFA World Cup <span className="y">2026</span>
           </span>
         </a>
-        <div className="topnav-links">
+        <NavMenu>
           <a href="#live">Live Results</a>
           <a href="#prediction">Prediction</a>
           <a href="#groups">Groups</a>
           <a href="#fixture">Fixture</a>
           <a href="#faq">FAQ</a>
-        </div>
+        </NavMenu>
         <ThemeToggle />
       </div>
     </nav>

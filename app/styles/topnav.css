@@ -1,13 +1,14 @@
-/* Top navbar — site chrome (components/site-nav.tsx). Mobile-first: these
-   base styles give phones a static two-row bar — brand + theme toggle on the
-   first row, the menu as a full-width hidden-scrollbar swipe strip on the
-   second. From 600px up, responsive.css collapses it to a single sticky row
-   (the same breakpoint where the stage .bar becomes sticky). */
+/* Top navbar — sticky site chrome (components/site-nav.tsx). Mobile-first:
+   these base styles give phones a single sticky row — brand, hamburger
+   (components/nav-menu.tsx) and theme toggle — with the menu links in a
+   dropdown panel under the bar. From 600px up, responsive.css hides the
+   hamburger and lays the links out inline in the row. */
 :root {
-  /* single-row height; responsive.css uses it for sticky offsets ≥600px */
   --topnav-h: 54px;
 }
 .topnav {
+  position: sticky;
+  top: 0;
   /* above the sticky stage bar (30), below the sign-up modal (50) */
   z-index: 40;
   border-bottom: 1px solid var(--line);
@@ -22,19 +23,19 @@
 .topnav-in {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 8px max(14px, env(safe-area-inset-right)) 8px
+  min-height: var(--topnav-h);
+  padding: 0 max(14px, env(safe-area-inset-right)) 0
     max(14px, env(safe-area-inset-left));
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 2px 16px;
+  gap: 10px;
 }
 .topnav-brand {
   flex: none;
+  margin-right: auto; /* pushes the controls (and inline links) right */
   display: flex;
   align-items: center;
   gap: 9px;
-  min-height: 36px;
   font-family: "Sometype Mono", monospace;
   font-size: 12.5px;
   font-weight: 700;
@@ -51,15 +52,60 @@
 .topnav-brand .y {
   color: var(--gold);
 }
+/* Hamburger (phones only — responsive.css hides it once the links inline) */
+.topnav-burger {
+  flex: none;
+  appearance: none;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--panel);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+.topnav-burger:hover {
+  border-color: var(--line2);
+}
+/* Phones: the menu is a dropdown panel hanging off the bar (absolute against
+   the sticky .topnav), themed by the solid background tokens so the page
+   underneath never bleeds through */
 .topnav-links {
-  /* phones: the menu wraps to its own full-width row and swipes sideways */
-  order: 4;
-  flex: 1 1 100%;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px max(14px, env(safe-area-inset-right)) 14px
+    max(14px, env(safe-area-inset-left));
+  background: linear-gradient(160deg, var(--bg), var(--bg2));
+  border-bottom: 1px solid var(--line);
+  box-shadow: var(--sh);
+}
+.topnav-links.open {
   display: flex;
-  align-items: center;
-  gap: 4px;
-  overflow-x: auto;
-  scrollbar-width: none;
+  animation: topnav-drop 0.18s ease;
+}
+@keyframes topnav-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .topnav-links.open {
+    animation: none;
+  }
 }
 .topnav-links::-webkit-scrollbar {
   display: none;
@@ -77,14 +123,18 @@
     color 0.15s,
     background 0.15s;
 }
+/* Comfortable touch targets while the links stack in the panel;
+   responsive.css trims them back down for the inline row */
+.topnav-links a {
+  padding: 12px 10px;
+}
 .topnav-links a:hover,
 .topnav-theme:hover {
   color: var(--ink);
   background: var(--panel2);
 }
 /* Theme toggle (components/theme-toggle.tsx) — a bare (`clr`) button reset to
-   look exactly like the links above. On phones it pins to the brand row's
-   right edge; ≥600px the links strip takes over the auto margin. */
+   look exactly like the menu links */
 .topnav-theme {
   appearance: none;
   border: 0;
@@ -92,17 +142,15 @@
   font-family: inherit;
   cursor: pointer;
   flex: none;
-  margin-left: auto;
 }
-/* Anchor targets get breathing room when scrolled to; while the navbar isn't
-   sticky (phones) the page edge is the only offset needed — responsive.css
-   adds the navbar height once it sticks */
+/* Anchor targets land below the sticky navbar instead of underneath it
+   (#fixture is the tournament schedule section) */
 #live,
 #prediction,
 #groups,
 #fixture,
 #faq {
-  scroll-margin-top: 14px;
+  scroll-margin-top: calc(var(--topnav-h) + 14px);
 }
 @media (prefers-reduced-motion: no-preference) {
   html {

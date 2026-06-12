@@ -101,33 +101,33 @@
     padding: 28px max(18px, env(safe-area-inset-right)) 90px
       max(18px, env(safe-area-inset-left));
   }
-  /* Navbar becomes a single sticky row: the menu rejoins the brand row
-     (pushed right), and the gutters widen to match .wrap */
-  .topnav {
-    position: sticky;
-    top: 0;
-  }
-  .topnav-in {
-    flex-wrap: nowrap;
-    min-height: var(--topnav-h);
-    padding: 0 max(18px, env(safe-area-inset-right)) 0
-      max(18px, env(safe-area-inset-left));
+  /* Navbar: the hamburger goes away and its dropdown panel flattens into an
+     inline row of links (swiping sideways if ever short on space); the
+     gutters widen to match .wrap */
+  .topnav-burger {
+    display: none;
   }
   .topnav-links {
-    order: 0;
+    position: static;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     flex: 0 1 auto;
-    margin-left: auto;
+    min-width: 0;
+    gap: 4px;
+    padding: 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
+    overflow-x: auto;
+    scrollbar-width: none;
   }
-  .topnav-theme {
-    margin-left: 0;
+  .topnav-links a {
+    padding: 7px 10px;
   }
-  /* Anchor targets clear the now-sticky navbar */
-  #live,
-  #prediction,
-  #groups,
-  #fixture,
-  #faq {
-    scroll-margin-top: calc(var(--topnav-h) + 14px);
+  .topnav-in {
+    padding: 0 max(18px, env(safe-area-inset-right)) 0
+      max(18px, env(safe-area-inset-left));
   }
   .bar {
     position: sticky;

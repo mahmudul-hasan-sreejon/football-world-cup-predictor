@@ -67,10 +67,13 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   (`components/theme-toggle.tsx`, the navbar's one client island), backed by
   `components/use-theme.ts` — theme state + the view-transition toggle. The hook is mounted twice
   (toggle + the predictor's Toaster), so commits are broadcast via a window event to keep both
-  instances in sync. Styled mobile-first by `app/styles/topnav.css`: the base styles give phones a
-  static two-row bar (brand + theme toggle, then the menu as a full-width swipe strip); from 600px
-  `responsive.css` collapses it to a single sticky row, raises the anchors' `scroll-margin-top` by
-  `--topnav-h`, and offsets the sticky stage `.bar` to sit below it.
+  instances in sync. Styled mobile-first by `app/styles/topnav.css`: a single sticky row at every
+  width. On phones the menu links live in a dropdown panel behind a hamburger
+  (`components/nav-menu.tsx` — a client island for open/close state; the links stay
+  server-rendered as its children, and the panel closes on link click, Escape, or an outside
+  tap); from 600px `responsive.css` hides the hamburger and flattens the panel into an inline
+  row. The anchors' `scroll-margin-top` clears the bar, and the sticky stage `.bar` offsets its
+  `top` by `--topnav-h` (see `responsive.css`).
 - **`app/layout.tsx`** — SEO via the Metadata API (title template, keywords, author/publisher,
   `googleBot` directives, Open Graph, Twitter), Google Fonts, a no-flash inline theme script, and
   a JSON-LD `@graph` bundling `WebApplication` + `SportsEvent` + `FAQPage`. The FAQ entries live in
