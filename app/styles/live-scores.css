@@ -58,11 +58,9 @@
 }
 .livecard:hover {
   transform: translateY(-3px);
-  border-color: rgba(255, 45, 114, 0.55);
   box-shadow:
     var(--glass-inset),
-    0 14px 30px rgba(0, 0, 0, 0.34),
-    0 0 0 1px rgba(255, 45, 114, 0.3);
+    0 14px 30px rgba(0, 0, 0, 0.34);
 }
 .livecard.live {
   border-color: rgba(255, 45, 114, 0.5);
@@ -78,10 +76,9 @@
     0 0 22px rgba(255, 45, 114, 0.16);
 }
 .livecard.live:hover {
-  border-color: rgba(255, 45, 114, 0.7);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.45),
-    0 0 0 1px rgba(255, 45, 114, 0.55) inset,
+    0 0 0 1px rgba(255, 45, 114, 0.45) inset,
     0 14px 30px rgba(0, 0, 0, 0.34),
     0 0 30px rgba(255, 45, 114, 0.26);
 }
