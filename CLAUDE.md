@@ -40,8 +40,14 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   - `use-live-scores.ts` (the self-rescheduling `/api/scores` poller — ignores transient empty
     payloads and quick-retries them rather than wiping on-screen scores) and `use-theme.ts` (theme
     state + the view-transition toggle) — the two effect-heavy concerns extracted as hooks.
+  - `ad-slot.tsx` — a reusable `<AdSlot id src>` for a single Adsterra ad unit (e.g. a Native
+    Banner). Loads Adsterra's `invoke.js` via `next/script` (`afterInteractive`) and renders the
+    matching `container-<id>` div; the script injects the ad client-side, outside React's tree, so
+    server and client both render an empty container (no hydration mismatch). The `.adslot` wrapper
+    reserves a `min-height` to avoid layout shift while the ad loads. Adsterra serves nothing on
+    `localhost`/unapproved domains, so the slot is empty in dev — verify on the live domain.
 - **`app/page.tsx`** — server component: static hero/footer, mounts `<Predictor />` from
-  `@/components/predictor/predictor`.
+  `@/components/predictor/predictor`, and renders an `<AdSlot />` (native banner) above the footer.
 - **`app/layout.tsx`** — SEO via the Metadata API (title template, keywords, author/publisher,
   `googleBot` directives, Open Graph, Twitter), Google Fonts, a no-flash inline theme script, and
   a JSON-LD `@graph` bundling `WebApplication` + `SportsEvent` + `FAQPage` (the FAQ entries are the
@@ -52,7 +58,7 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   order — keep the `@import` sequence intact, and keep `theme-light.css`/`glass.css`/`glass-light.css`
   last so they override the base look. The partials under **`app/styles/`** are split by concern
   (`base`, `header`, `live-scores`, `nav`, `stage`, `groups`, `thirds`, `champion`, `modal`,
-  `bracket`, `footer`, `skeleton`, `responsive`, plus the theme/glass overrides). Theming is driven by a `light`
+  `bracket`, `footer`, `adslot`, `skeleton`, `responsive`, plus the theme/glass overrides). Theming is driven by a `light`
   class on `<html>`.
 - **`app/confetti.ts`** — dependency-free canvas confetti (`fireConfetti()`); client-only, self-cleans
   the canvas, and no-ops under `prefers-reduced-motion`. Fired from `predictor.tsx` on champion.
