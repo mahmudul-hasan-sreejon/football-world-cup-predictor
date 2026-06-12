@@ -21,6 +21,7 @@
 @import "./styles/bracket.css"; /* stage 3: knockout bracket */
 @import "./styles/reveal.css"; /* cursor-following tile border highlight */
 @import "./styles/footer.css"; /* data note + footer */
+@import "./styles/adslot.css"; /* adsterra native banner slot */
 @import "./styles/skeleton.css"; /* loading placeholders (pre-mount) */
 @import "./styles/responsive.css"; /* mobile-first media queries */
 @import "./styles/theme-light.css"; /* light-theme overrides */

@@ -1,0 +1,10 @@
+
+/* Adsterra native banner slot. Reserve a min-height so the async-injected ad
+   doesn't shift the content around it (CLS) while invoke.js loads. The ad
+   itself is styled by Adsterra; we only own the surrounding frame. */
+.adslot {
+  margin-top: 30px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  min-height: 140px;
+}

@@ -1,4 +1,5 @@
 import Predictor from "@/components/predictor/predictor";
+import { AdSlot } from "@/components/predictor/ad-slot";
 
 export default function Home() {
   return (
@@ -35,6 +36,11 @@ export default function Home() {
         are rough approximations to give you an editable starting point — not
         predictions. Your picks reset on reload.
       </p>
+
+      <AdSlot
+        id="d38de939263cc5574d2e2ae540e86ecc"
+        src="https://pl29725502.effectivecpmnetwork.com/d38de939263cc5574d2e2ae540e86ecc/invoke.js"
+      />
 
       <footer className="footer">
         <p className="foot-brand">
