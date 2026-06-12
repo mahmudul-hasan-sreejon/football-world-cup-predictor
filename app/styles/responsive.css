@@ -122,7 +122,8 @@
     overflow-x: auto;
     scrollbar-width: none;
   }
-  .topnav-links a {
+  .topnav-links a,
+  .topnav-links .topnav-theme {
     padding: 7px 10px;
   }
   .topnav-in {

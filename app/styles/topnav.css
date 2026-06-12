@@ -123,9 +123,10 @@
     color 0.15s,
     background 0.15s;
 }
-/* Comfortable touch targets while the links stack in the panel;
+/* Comfortable touch targets while the menu items stack in the panel;
    responsive.css trims them back down for the inline row */
-.topnav-links a {
+.topnav-links a,
+.topnav-links .topnav-theme {
   padding: 12px 10px;
 }
 .topnav-links a:hover,
@@ -134,7 +135,8 @@
   background: var(--panel2);
 }
 /* Theme toggle (components/theme-toggle.tsx) — a bare (`clr`) button reset to
-   look exactly like the menu links */
+   look exactly like the menu links; left-aligned so it stacks like one in the
+   phone panel */
 .topnav-theme {
   appearance: none;
   border: 0;
@@ -142,6 +144,7 @@
   font-family: inherit;
   cursor: pointer;
   flex: none;
+  text-align: left;
 }
 /* Anchor targets land below the sticky navbar instead of underneath it
    (#fixture is the tournament schedule section) */

@@ -64,7 +64,8 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   `#live` (live banner), `#prediction` (the predictor's `Tabs` root; the skeleton mirrors the id
   on a plain div), `#groups` (groups summary), `#fixture` (the tournament schedule), `#faq`. Also
   hosts the theme toggle
-  (`components/theme-toggle.tsx`, the navbar's one client island), backed by
+  (`components/theme-toggle.tsx`, rendered inside the menu after the links — it stacks in the
+  phone dropdown and ends the inline row on wider screens), backed by
   `components/use-theme.ts` — theme state + the view-transition toggle. The hook is mounted twice
   (toggle + the predictor's Toaster), so commits are broadcast via a window event to keep both
   instances in sync. Styled mobile-first by `app/styles/topnav.css`: a single sticky row at every

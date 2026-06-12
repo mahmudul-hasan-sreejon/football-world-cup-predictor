@@ -7,8 +7,9 @@ import { ThemeToggle } from "./theme-toggle";
 // islands). The menu items are in-page anchors to the index sections: the
 // live-scores strip (#live), the predictor (#prediction), the server-rendered
 // groups summary (#groups), the tournament schedule (#fixture), and the FAQ
-// (#faq). On phones the links live in NavMenu's dropdown panel; from 600px up
-// they lay out inline. Styled by app/styles/topnav.css.
+// (#faq). The theme toggle rides inside the menu too, so on phones it stacks
+// in NavMenu's dropdown panel and from 600px up it sits at the end of the
+// inline row. Styled by app/styles/topnav.css.
 export function SiteNav() {
   return (
     <nav className="topnav" aria-label="Site">
@@ -25,8 +26,8 @@ export function SiteNav() {
           <a href="#groups">Groups</a>
           <a href="#fixture">Fixture</a>
           <a href="#faq">FAQ</a>
+          <ThemeToggle />
         </NavMenu>
-        <ThemeToggle />
       </div>
     </nav>
   );
