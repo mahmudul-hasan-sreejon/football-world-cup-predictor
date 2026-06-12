@@ -101,6 +101,34 @@
     padding: 28px max(18px, env(safe-area-inset-right)) 90px
       max(18px, env(safe-area-inset-left));
   }
+  /* Navbar becomes a single sticky row: the menu rejoins the brand row
+     (pushed right), and the gutters widen to match .wrap */
+  .topnav {
+    position: sticky;
+    top: 0;
+  }
+  .topnav-in {
+    flex-wrap: nowrap;
+    min-height: var(--topnav-h);
+    padding: 0 max(18px, env(safe-area-inset-right)) 0
+      max(18px, env(safe-area-inset-left));
+  }
+  .topnav-links {
+    order: 0;
+    flex: 0 1 auto;
+    margin-left: auto;
+  }
+  .topnav-theme {
+    margin-left: 0;
+  }
+  /* Anchor targets clear the now-sticky navbar */
+  #live,
+  #prediction,
+  #groups,
+  #fixture,
+  #faq {
+    scroll-margin-top: calc(var(--topnav-h) + 14px);
+  }
   .bar {
     position: sticky;
     top: var(--topnav-h); /* stick just below the top navbar */

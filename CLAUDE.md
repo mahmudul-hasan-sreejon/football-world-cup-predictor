@@ -61,9 +61,10 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   (`components/theme-toggle.tsx`, the navbar's one client island), backed by
   `components/use-theme.ts` — theme state + the view-transition toggle. The hook is mounted twice
   (toggle + the predictor's Toaster), so commits are broadcast via a window event to keep both
-  instances in sync. Styled by `app/styles/topnav.css`, which also
-  sets the sections' `scroll-margin-top` so anchors land below the bar; the sticky stage `.bar`
-  offsets its `top` by `--topnav-h` (see `responsive.css`).
+  instances in sync. Styled mobile-first by `app/styles/topnav.css`: the base styles give phones a
+  static two-row bar (brand + theme toggle, then the menu as a full-width swipe strip); from 600px
+  `responsive.css` collapses it to a single sticky row, raises the anchors' `scroll-margin-top` by
+  `--topnav-h`, and offsets the sticky stage `.bar` to sit below it.
 - **`app/layout.tsx`** — SEO via the Metadata API (title template, keywords, author/publisher,
   `googleBot` directives, Open Graph, Twitter), Google Fonts, a no-flash inline theme script, and
   a JSON-LD `@graph` bundling `WebApplication` + `SportsEvent` + `FAQPage`. The FAQ entries live in
