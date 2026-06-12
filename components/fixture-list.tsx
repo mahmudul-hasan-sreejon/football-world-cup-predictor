@@ -1,6 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { stageTag, statusLabel, type LiveMatch } from "@/lib/scores";
 import { useLiveScores } from "./use-live-scores";
@@ -38,9 +39,9 @@ export function FixtureList() {
     return (
       <div className="fx-day" aria-hidden="true">
         <Skeleton style={{ height: 12, width: 160, marginBottom: 10 }} />
-        <ul className="fx-list">
+        <div className="fx-list">
           {Array.from({ length: 6 }, (_, i) => (
-            <li className="fx-row" key={i}>
+            <Card className="fx-row" key={i}>
               <Skeleton className="fx-tag" style={{ height: 11, width: 42 }} />
               <Skeleton className="fx-when" style={{ height: 11, width: 44 }} />
               <Skeleton
@@ -49,9 +50,9 @@ export function FixtureList() {
               />
               <Skeleton className="fx-score" style={{ height: 15, width: 30 }} />
               <Skeleton className="fx-away" style={{ height: 13, width: "70%" }} />
-            </li>
+            </Card>
           ))}
-        </ul>
+        </div>
       </div>
     );
   }
@@ -75,12 +76,16 @@ export function FixtureList() {
       {days.map(({ label, matches }) => (
         <section className="fx-day" key={label} aria-label={label}>
           <h3>{label}</h3>
-          <ul className="fx-list">
+          <div className="fx-list" role="list">
             {matches.map((m) => {
               const badge = statusLabel(m);
               const started = m.homeScore !== null && m.awayScore !== null;
               return (
-                <li className={`fx-row ${badge.toLowerCase()}`} key={m.id}>
+                <Card
+                  role="listitem"
+                  className={`fx-row reveal ${badge.toLowerCase()}`}
+                  key={m.id}
+                >
                   <span className="fx-tag">
                     {m.group ? `Grp ${m.group}` : (stageTag(m.stage) ?? "")}
                   </span>
@@ -102,10 +107,10 @@ export function FixtureList() {
                   <span className="fx-when">
                     {badge === "SOON" ? kickoffTime(m.utcDate) : badge}
                   </span>
-                </li>
+                </Card>
               );
             })}
-          </ul>
+          </div>
         </section>
       ))}
     </>

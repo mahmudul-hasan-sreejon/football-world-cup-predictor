@@ -1,6 +1,12 @@
 import Predictor from "@/components/predictor/predictor";
 import { FixtureList } from "@/components/fixture-list";
 import { AdSlot } from "@/components/predictor/ad-slot";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { GROUPS, TEAMS } from "@/lib/bracket";
 import { FAQS } from "@/lib/faq";
 
@@ -50,16 +56,20 @@ export default function Home() {
         </p>
         <div className="seo-groups">
           {GROUPS.map((g) => (
-            <div className="seo-group" key={g}>
-              <h3>Group {g}</h3>
-              <ul>
-                {TEAMS[g].map(([name, flag]) => (
-                  <li key={name}>
-                    <span aria-hidden="true">{flag}</span> {name}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <Card className="seo-group reveal" key={g}>
+              <CardHeader>
+                <CardTitle>Group {g}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul>
+                  {TEAMS[g].map(([name, flag]) => (
+                    <li key={name}>
+                      <span aria-hidden="true">{flag}</span> {name}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </section>

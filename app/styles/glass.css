@@ -16,6 +16,8 @@
     inset 0 -10px 22px rgba(0, 0, 0, 0.16),
     inset 0 0 0 1px rgba(255, 255, 255, 0.05);
   --glass-drop: 0 14px 38px rgba(0, 0, 0, 0.42), 0 3px 10px rgba(0, 0, 0, 0.3);
+  /* deeper drop for the hover lift shared by the live/groups/fixture cards */
+  --glass-drop-hover: 0 14px 30px rgba(0, 0, 0, 0.34);
 }
 
 /* Frost the backdrop on every glass surface */
@@ -29,7 +31,9 @@
 .rhead,
 .btn,
 .tab,
-.pill {
+.pill,
+.seo-group,
+.fx-row {
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
 }
@@ -37,10 +41,18 @@
 /* Large panels */
 .gcard,
 .thirdsbar,
-.lock {
+.lock,
+.seo-group,
+.fx-row {
   background: var(--glass-tint);
   border-color: var(--glass-edge);
   box-shadow: var(--glass-inset), var(--glass-drop);
+}
+/* Groups-summary and fixture cards lift on hover like the live cards */
+.seo-group:hover,
+.fx-row:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--glass-inset), var(--glass-drop-hover);
 }
 .bar {
   background: linear-gradient(

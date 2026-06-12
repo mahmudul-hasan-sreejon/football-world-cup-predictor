@@ -14,6 +14,7 @@ html.light {
     inset 0 0 0 1px rgba(255, 255, 255, 0.35);
   --glass-drop:
     0 14px 36px rgba(20, 45, 38, 0.18), 0 3px 10px rgba(20, 45, 38, 0.12);
+  --glass-drop-hover: 0 14px 30px rgba(20, 45, 38, 0.22);
 }
 html.light .bar {
   background: linear-gradient(
