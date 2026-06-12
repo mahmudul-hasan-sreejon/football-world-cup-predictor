@@ -55,8 +55,9 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   skeleton). Styled by `app/styles/seo.css`.
 - **`components/site-nav.tsx`** — the sticky top navbar (server component, rendered by
   `layout.tsx` above `children`): favicon + site name plus anchor links to the index sections —
-  `#live` (live banner), `#groups` (groups summary), `#fixture` (the predictor's `Tabs` root; the
-  skeleton mirrors the id on a plain div), `#faq`. Also hosts the theme toggle
+  `#live` (live banner), `#prediction` (the predictor's `Tabs` root; the skeleton mirrors the id
+  on a plain div), `#groups` (groups summary), `#fixture` (no target yet — reserved for the
+  planned match-fixtures section), `#faq`. Also hosts the theme toggle
   (`components/theme-toggle.tsx`, the navbar's one client island), backed by
   `components/use-theme.ts` — theme state + the view-transition toggle. The hook is mounted twice
   (toggle + the predictor's Toaster), so commits are broadcast via a window event to keep both

@@ -99,9 +99,9 @@ export function PredictorSkeleton() {
   return (
     <>
       <LiveBannerSkeleton />
-      {/* Mirrors the real Tabs root, which carries id="fixture", so the
+      {/* Mirrors the real Tabs root, which carries id="prediction", so the
           navbar's anchor works before the predictor mounts. */}
-      <div id="fixture">
+      <div id="prediction">
         <NavSkeleton />
         <GroupsStageSkeleton />
       </div>

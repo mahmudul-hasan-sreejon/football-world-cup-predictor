@@ -114,8 +114,8 @@ to bloat the `subscribers` table (see `app/api/subscribe/route.ts` and `lib/rate
 
 - `app/layout.tsx` — root layout, SEO metadata, fonts, JSON-LD (`WebApplication` + `SportsEvent` + `FAQPage`), no-flash theme script; renders the sticky top navbar above the page
 - `components/site-nav.tsx` — the top navbar: favicon + site name, anchor links to the page sections
-  (`#live`, `#groups`, `#fixture`, `#faq`), and the theme toggle (`theme-toggle.tsx`, backed by the
-  shared `use-theme` hook)
+  (`#live`, `#prediction`, `#groups`, `#fixture` — the latter reserved for the planned match-fixtures
+  section — and `#faq`), and the theme toggle (`theme-toggle.tsx`, backed by the shared `use-theme` hook)
 - `app/page.tsx` — static hero/footer, mounts the predictor; also server-renders the 12-group/48-team
   summary and FAQ sections — the page's crawlable copy, since the predictor itself is client-only
 - `app/confetti.ts` — dependency-free canvas confetti burst for the champion celebration

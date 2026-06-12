@@ -88,8 +88,10 @@
   cursor: pointer;
   flex: none;
 }
-/* Anchor targets land below the sticky navbar instead of underneath it */
+/* Anchor targets land below the sticky navbar instead of underneath it
+   (#fixture is the future match-fixtures section) */
 #live,
+#prediction,
 #groups,
 #fixture,
 #faq {

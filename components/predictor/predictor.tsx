@@ -250,7 +250,7 @@ export default function Predictor() {
         <LiveBanner matches={liveBanner} demoFeed={demoFeed} />
       )}
 
-      <Tabs id="fixture" value={stage} onValueChange={go}>
+      <Tabs id="prediction" value={stage} onValueChange={go}>
         <Nav tabs={tabs} stage={stage} onAutoPick={autoPick} onReset={resetAll} />
 
         <GroupsStage
