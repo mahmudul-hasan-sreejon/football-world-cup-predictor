@@ -113,7 +113,8 @@ to bloat the `subscribers` table (see `app/api/subscribe/route.ts` and `lib/rate
 ## Project structure
 
 - `app/layout.tsx` — root layout, SEO metadata, fonts, JSON-LD (`WebApplication` + `SportsEvent` + `FAQPage`), no-flash theme script
-- `app/page.tsx` — static hero/footer, mounts the predictor
+- `app/page.tsx` — static hero/footer, mounts the predictor; also server-renders the 12-group/48-team
+  summary and FAQ sections — the page's crawlable copy, since the predictor itself is client-only
 - `app/confetti.ts` — dependency-free canvas confetti burst for the champion celebration
 - `app/globals.css` — stylesheet entry point; imports the per-concern partials under `app/styles/`
 - `app/icon.svg` — favicon (served as `/icon.svg`)
@@ -124,11 +125,14 @@ to bloat the `subscribers` table (see `app/api/subscribe/route.ts` and `lib/rate
 - `app/api/scores/route.ts` — GET endpoint the client polls for live scores (Redis-cached, demo-feed fallback)
 - `components/predictor/` — the interactive UI: a stateful container (`predictor.tsx`) plus presentational
   stages (`groups-stage`, `thirds-stage`, `knockout-stage`), `nav`, `live-banner`, `subscribe-dialog`, the
-  pre-mount `predictor-skeleton`, and the `use-live-scores` / `use-theme` hooks
+  pre-mount `predictor-skeleton`, the `ad-slot` wrapper for Adsterra units, and the
+  `use-live-scores` / `use-theme` hooks
 - `components/ui/` — shadcn/ui primitives, structural wrappers over the bespoke CSS (badge, button, card,
   dialog, input, tabs, sonner toaster, skeleton)
 - `lib/bracket.ts` — tournament types + pure bracket logic (resolve/validate); re-exports `lib/annex.ts`
   (the Annex C seeding table) and `lib/teams.ts` (team data + indexes)
+- `lib/faq.ts` — FAQ copy shared by the visible FAQ section and the `FAQPage` JSON-LD, so the
+  structured data always matches the on-page text
 - `lib/scores.ts` — live-score domain layer: normalizes football-data.org matches and the demo feed
 - `lib/subscribers.ts` — Vercel Postgres data layer for newsletter sign-ups (unique-email insert + table bootstrap)
 - `lib/rate-limit.ts` — durable per-IP rate limiter for the subscribe route (Upstash Redis)
