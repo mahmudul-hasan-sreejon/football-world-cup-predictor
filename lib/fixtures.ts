@@ -1,10 +1,13 @@
 import { sql } from "@vercel/postgres";
 import { flagFor, type LiveMatch } from "@/lib/scores";
 
-// Vercel Postgres data layer for finished matches. Once a match is FINISHED
-// its result never changes, so each one is written here exactly once, keyed by
-// the upstream football-data.org match id (every FIFA match has a stable
-// serial). Reads come back in tournament order (kickoff time, then id).
+// Vercel Postgres data layer for the fixtures table, keyed by the upstream
+// football-data.org match id (every FIFA match has a stable serial). The table
+// may hold the full confirmed schedule (rows seeded with their upstream
+// status, e.g. TIMED), but only FINISHED/AWARDED rows are ever read back —
+// a result is immutable once the final whistle goes, so each one is upserted
+// exactly once when the match finishes. Reads come back in tournament order
+// (kickoff time, then id).
 //
 // All functions degrade to a no-op / empty list when POSTGRES_URL is unset
 // (local dev without a database), mirroring how lib/redis.ts degrades.
@@ -68,13 +71,17 @@ function rowToMatch(r: FixtureRow): LiveMatch {
   };
 }
 
-// Persist any finished matches not already stored. Results are immutable, so
-// rows already present are left untouched — one SELECT to diff, then one
-// INSERT per genuinely new result (a handful per matchday at most).
+// Persist any results not already stored as finished. The diff is against the
+// rows already FINISHED — a pre-seeded schedule row (status TIMED) doesn't
+// count, so the upsert overwrites it with the result the first time the match
+// shows up finished; after that it's never touched again. One SELECT to diff,
+// then one upsert per genuinely new result (a handful per matchday at most).
 export async function saveFinished(matches: LiveMatch[]): Promise<void> {
   if (!hasDb() || matches.length === 0) return;
   await ensureTable();
-  const { rows } = await sql<{ id: number }>`SELECT id FROM fixtures`;
+  const { rows } = await sql<{ id: number }>`
+    SELECT id FROM fixtures WHERE status IN ('FINISHED', 'AWARDED')
+  `;
   const have = new Set(rows.map((r) => r.id));
   for (const m of matches) {
     if (have.has(m.id)) continue;
@@ -82,18 +89,29 @@ export async function saveFinished(matches: LiveMatch[]): Promise<void> {
       INSERT INTO fixtures (id, utc_date, status, home, away, home_score, away_score, grp, stage)
       VALUES (${m.id}, ${m.utcDate}, ${m.status}, ${m.home}, ${m.away},
               ${m.homeScore}, ${m.awayScore}, ${m.group}, ${m.stage})
-      ON CONFLICT (id) DO NOTHING
+      ON CONFLICT (id) DO UPDATE SET
+        utc_date   = EXCLUDED.utc_date,
+        status     = EXCLUDED.status,
+        home       = EXCLUDED.home,
+        away       = EXCLUDED.away,
+        home_score = EXCLUDED.home_score,
+        away_score = EXCLUDED.away_score,
+        grp        = EXCLUDED.grp,
+        stage      = EXCLUDED.stage
     `;
   }
 }
 
-// Every stored result, in tournament order.
+// Every stored result, in tournament order. Schedule rows seeded ahead of
+// time (not yet finished) are deliberately excluded — the live schedule comes
+// from the Redis snapshot, and serving these would duplicate it.
 export async function getFinishedFromDb(): Promise<LiveMatch[]> {
   if (!hasDb()) return [];
   await ensureTable();
   const { rows } = await sql<FixtureRow>`
     SELECT id, utc_date, status, home, away, home_score, away_score, grp, stage
     FROM fixtures
+    WHERE status IN ('FINISHED', 'AWARDED')
     ORDER BY utc_date, id
   `;
   return rows.map(rowToMatch);

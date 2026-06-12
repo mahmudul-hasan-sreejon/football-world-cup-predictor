@@ -141,14 +141,16 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   the hook keeps them and quick-retries a few times before resuming the regular cadence. It's
   mounted independently by its two consumers: `LiveBanner` renders the strip, `FixtureList` the
   full schedule.
-- **`lib/fixtures.ts`** — Vercel Postgres data layer for finished match results. The `fixtures`
-  table is keyed by the upstream football-data.org match id (every FIFA match has a stable
-  serial); `saveFinished()` diffs against stored ids and inserts only new results (finished
-  results are immutable, existing rows are never rewritten), `getFinishedFromDb()` returns them
-  in tournament order (kickoff, then id), rebuilding the `LiveMatch` shape with flags recomputed
-  from team names. Lazily runs `CREATE TABLE IF NOT EXISTS` on first call (no migration step) and
-  no-ops/returns `[]` when `POSTGRES_URL` is unset, mirroring `lib/redis.ts`'s graceful
-  degradation.
+- **`lib/fixtures.ts`** — Vercel Postgres data layer for the `fixtures` table, keyed by the
+  upstream football-data.org match id (every FIFA match has a stable serial). The table may hold
+  the full confirmed schedule (seeded rows carry their upstream status, e.g. `TIMED`), but only
+  `FINISHED`/`AWARDED` rows are ever read back: `getFinishedFromDb()` returns them in tournament
+  order (kickoff, then id), rebuilding the `LiveMatch` shape with flags recomputed from team
+  names. `saveFinished()` diffs against the ids already stored *as finished* and upserts only new
+  results — so a pre-seeded schedule row is overwritten with the result the first time its match
+  finishes, then never touched again. Lazily runs `CREATE TABLE IF NOT EXISTS` on first call (no
+  migration step) and no-ops/returns `[]` when `POSTGRES_URL` is unset, mirroring
+  `lib/redis.ts`'s graceful degradation.
 - **`lib/subscribers.ts`** — Vercel Postgres data layer. `addSubscriber()` inserts on the unique
   `email` with `ON CONFLICT DO NOTHING RETURNING id`, returning `true` for a fresh sign-up and
   `false` when the email already exists (the route turns `false` into a 409). It lazily runs

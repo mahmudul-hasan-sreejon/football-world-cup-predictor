@@ -59,7 +59,9 @@ tier is never exceeded, and **upstream is only called while a match may actually
 - **Finished matches** — a result is immutable once the final whistle goes, so it's persisted to
   the `fixtures` table in Postgres (keyed by the match's serial id, in tournament order) and served
   from a 24-hour Redis cache in front of it; a cache miss falls back to the database and reseeds
-  the cache. Finished matches never trigger an upstream call again.
+  the cache. Finished matches never trigger an upstream call again. The table may also be
+  pre-seeded with the full confirmed schedule — those rows are ignored by reads until their match
+  finishes, at which point the result is written over them once.
 - **Upcoming matches** — haven't been played, so there's nothing to fetch: they're answered from a
   12-hour Redis snapshot of the schedule taken at the last real fetch. The snapshot's expiry is the
   only reason upstream is touched between matchdays (about twice a day, to pick up schedule changes
@@ -159,8 +161,8 @@ to bloat the `subscribers` table (see `app/api/subscribe/route.ts` and `lib/rate
 - `lib/faq.ts` — FAQ copy shared by the visible FAQ section and the `FAQPage` JSON-LD, so the
   structured data always matches the on-page text
 - `lib/scores.ts` — live-score domain layer: normalizes football-data.org matches and the demo feed
-- `lib/fixtures.ts` — Vercel Postgres data layer for finished match results (insert-once by match
-  serial + table bootstrap)
+- `lib/fixtures.ts` — Vercel Postgres data layer for the fixtures table (full confirmed schedule,
+  keyed by match serial; results upserted once as matches finish, only finished rows read back)
 - `lib/subscribers.ts` — Vercel Postgres data layer for newsletter sign-ups (unique-email insert + table bootstrap)
 - `lib/rate-limit.ts` — durable per-IP rate limiter for the subscribe route (Upstash Redis)
 - `lib/redis.ts` — shared Upstash Redis client, reused by the rate limiter and the live-scores cache
