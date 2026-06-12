@@ -37,7 +37,8 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   - `predictor-skeleton.tsx` — the whole-page loading state the container renders while `mounted`
     is false. It reuses the real layout classes (`.livewrap`/`.bar`/`.groups`/…) filled with
     `<Skeleton>` blocks, so the server render and the pre-hydration client render match (no pop-in).
-  - `use-live-scores.ts` (the self-rescheduling `/api/scores` poller) and `use-theme.ts` (theme
+  - `use-live-scores.ts` (the self-rescheduling `/api/scores` poller — ignores transient empty
+    payloads and quick-retries them rather than wiping on-screen scores) and `use-theme.ts` (theme
     state + the view-transition toggle) — the two effect-heavy concerns extracted as hooks.
 - **`app/page.tsx`** — server component: static hero/footer, mounts `<Predictor />` from
   `@/components/predictor/predictor`.
@@ -60,13 +61,18 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   hits (the hidden `website` field) as silent fake-success, caps/validates the email, and coerces
   `champion` to a known `TEAM_NAMES` value or `null`. Only then calls `addSubscriber()`.
 - **`app/api/scores/route.ts`** — `GET` handler the client polls for live scores. Serves
-  `{ matches, demo, updatedAt }` from the Redis key `wc:matches` (45s TTL); on a cold/expired
-  cache, one request takes a short `wc:matches:lock` and refreshes upstream while others get an
-  empty list (stampede guard). The 45s TTL caps upstream calls regardless of traffic, keeping us
-  under the free 10 req/min limit; a `Cache-Control: s-maxage=30` header lets Vercel's edge absorb
-  bursts without invoking the function. When `FOOTBALL_API_KEY` is unset it returns `demoMatches()`
-  with `demo: true` (uncached) so the section still renders; falls back to a direct fetch when
-  `redis` is null but a key is present.
+  `{ matches, demo, updatedAt }` from the Redis key `wc:matches` (45s TTL); every good payload is
+  also written to `wc:matches:stale` (6h TTL) as the last-known-good copy. On a cold/expired
+  cache, one request takes a short `wc:matches:lock` and refreshes upstream (stampede guard);
+  concurrent losers serve the stale copy instantly, waiting briefly for the winner's write only
+  when no stale copy exists yet. A failed refresh releases the lock (so the next poll retries
+  immediately) and likewise serves stale. The truly-empty fallback — possible only on a cold start
+  with nothing cached during an upstream failure — goes out with `Cache-Control: no-store`, so an
+  empty payload is never edge-cached over real data; real payloads carry `s-maxage=30` to let
+  Vercel's edge absorb bursts without invoking the function. The 45s TTL caps upstream calls
+  regardless of traffic, keeping us under the free 10 req/min limit. When `FOOTBALL_API_KEY` is
+  unset it returns `demoMatches()` with `demo: true` (uncached) so the section still renders;
+  falls back to a direct fetch when `redis` is null but a key is present.
 - **`lib/redis.ts`** — the shared Upstash Redis client (`redis`), reused by both the rate limiter
   and the live-scores cache. Reads `UPSTASH_REDIS_REST_URL`/`_TOKEN` (or the `KV_REST_API_*`
   Marketplace pair); exports `null` when unset so callers degrade gracefully (local dev).
@@ -77,11 +83,15 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   call to football-data.org (`/v4/competitions/WC/matches`, auth via `FOOTBALL_API_KEY`) and
   normalizes each match into `LiveMatch`, mapping team names to our flags via a `NAME_ALIASES`
   table, and tags each with its `group` letter and (via `statusLabel`) a LIVE/SOON/FT badge.
-  Returns `[]` when the key is unset or the request fails; `demoMatches()` is the stand-in feed the
-  route serves without a key. `upcomingOrLive(matches, now, days=3)` is the pure filter for "in
+  Returns `[]` when the key is unset and **throws** when the request fails or exceeds its 8s
+  timeout, so the route's catch path skips the cache write instead of caching an empty list as
+  real data; `demoMatches()` is the stand-in feed the route serves without a key.
+  `upcomingOrLive(matches, now, days=3)` is the pure filter for "in
   play, or kicking off within the next `days` days". The `useLiveScores` hook
   (`components/predictor/use-live-scores.ts`) polls `/api/scores` (paused while the tab is hidden,
-  fast cadence only while a match is live) and `LiveBanner` renders the strip.
+  fast cadence only while a match is live); an empty response never wipes scores already on screen —
+  the hook keeps them and quick-retries a few times before resuming the regular cadence.
+  `LiveBanner` renders the strip.
 - **`lib/subscribers.ts`** — Vercel Postgres data layer. `addSubscriber()` inserts on the unique
   `email` with `ON CONFLICT DO NOTHING RETURNING id`, returning `true` for a fresh sign-up and
   `false` when the email already exists (the route turns `false` into a 409). It lazily runs

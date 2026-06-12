@@ -103,28 +103,29 @@ function normalise(m: RawMatch): LiveMatch | null {
 }
 
 // Fetch every World Cup match (scores + statuses) in a single upstream call.
-// Returns [] when the API key is unset (local dev) or the request fails, so the
-// banner simply hides rather than the app breaking.
+// Returns [] when the API key is unset (local dev); THROWS when the request
+// fails, so the caller can tell "upstream is down" apart from a genuinely
+// empty fixture list and avoid caching a failure as real data.
 export async function fetchUpstreamMatches(): Promise<LiveMatch[]> {
   const key = process.env.FOOTBALL_API_KEY;
   if (!key) return [];
-  try {
-    const res = await fetch(
-      "https://api.football-data.org/v4/competitions/WC/matches",
-      { headers: { "X-Auth-Token": key }, cache: "no-store" },
-    );
-    if (!res.ok) {
-      console.error("football-data.org returned", res.status);
-      return [];
-    }
-    const data: { matches?: RawMatch[] } = await res.json();
-    return (data.matches ?? [])
-      .map(normalise)
-      .filter((m): m is LiveMatch => m !== null);
-  } catch (err) {
-    console.error("fetchUpstreamMatches failed", err);
-    return [];
+  const res = await fetch(
+    "https://api.football-data.org/v4/competitions/WC/matches",
+    {
+      headers: { "X-Auth-Token": key },
+      cache: "no-store",
+      // A hung upstream call would otherwise hold the refresh lock for its
+      // full TTL while every client waits on an empty cache.
+      signal: AbortSignal.timeout(8_000),
+    },
+  );
+  if (!res.ok) {
+    throw new Error(`football-data.org returned ${res.status}`);
   }
+  const data: { matches?: RawMatch[] } = await res.json();
+  return (data.matches ?? [])
+    .map(normalise)
+    .filter((m): m is LiveMatch => m !== null);
 }
 
 // Stand-in feed used when no FOOTBALL_API_KEY is configured (local dev, previews)

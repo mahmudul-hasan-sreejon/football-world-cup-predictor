@@ -37,12 +37,34 @@ modal to optionally subscribe with an email — the only thing saved server-side
 
 Above the stages, a **Live & Latest Results** strip shows in-play and upcoming matches, polled from a
 cached `/api/scores` endpoint; it falls back to a curated demo feed when no football-data.org key is
-configured. The whole predictor renders a shimmering skeleton until it mounts on the client, so the
-real picks and live data fade in without a layout pop-in.
+configured (see [Live scores](#live-scores)). The whole predictor renders a shimmering skeleton until
+it mounts on the client, so the real picks and live data fade in without a layout pop-in.
 
 Your bracket picks live in memory only and reset on reload. **Auto-pick by ranking** fills the entire
 bracket from rough team-strength ratings as an editable starting point, and **Reset** clears it. The
 theme preference is saved client-side, in `localStorage` under `wc26-theme`.
+
+## Live scores
+
+The **Live & Latest Results** strip is fed by one upstream source — football-data.org — behind a
+caching layer designed so the banner never goes blank and the free API tier is never exceeded, no
+matter how many people are on the site (see `app/api/scores/route.ts` and `lib/scores.ts`):
+
+- **Fresh cache** — upstream responses are cached in Redis for 45 seconds, so upstream sees at most
+  ~1 request per 45s regardless of traffic. A `Cache-Control: s-maxage=30` header additionally lets
+  Vercel's edge absorb polling bursts without invoking the function.
+- **Stampede lock** — when the fresh cache expires, a short Redis lock ensures exactly one request
+  refreshes upstream while concurrent ones are served from the stale copy.
+- **Stale fallback** — every good payload is also kept for 6 hours. If a refresh is in flight or
+  upstream fails (timeout, rate limit, outage), clients get the last known good scores instantly
+  instead of an empty list; a failed refresh also releases the lock so the next poll retries
+  immediately. Only a cold start with nothing cached at all can serve empty — and that response is
+  marked `no-store` so it's never cached over real data.
+- **Client polling** — `use-live-scores.ts` polls every 30s while a match is in play and every 5
+  minutes otherwise, pausing entirely while the tab is hidden. A transient empty response never
+  wipes scores already on screen; the hook keeps them and quick-retries within seconds.
+- **Demo feed** — with no `FOOTBALL_API_KEY` configured the endpoint serves a curated stand-in
+  feed, flagged with a "Demo feed" badge in the UI, so the section still renders in local dev.
 
 ## Configuration
 
@@ -60,10 +82,15 @@ cp .env.example .env.local
   locally only to test subscriptions. The `subscribers` table is created on first use, so no
   migration step is needed.
 - `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` — Upstash Redis REST credentials used to
-  rate-limit the `/api/subscribe` route per IP (see [Abuse protection](#abuse-protection)). On Vercel
+  rate-limit the `/api/subscribe` route per IP (see [Abuse protection](#abuse-protection)) and to
+  cache live scores for `/api/scores` (see [Live scores](#live-scores)). On Vercel
   they're injected automatically when you attach an Upstash for Redis store (under the names
   `KV_REST_API_URL` / `KV_REST_API_TOKEN`, which the code also accepts). When unset, the limiter is
   disabled and every request is allowed, so the app still runs without them.
+- `FOOTBALL_API_KEY` — [football-data.org](https://www.football-data.org/) API key for the live
+  scores strip. The free tier is sufficient — the Redis cache caps upstream traffic at ~1 request
+  per 45 seconds regardless of visitor count. When unset, the strip shows a curated demo feed
+  instead (see [Live scores](#live-scores)).
 
 `.env.local` is gitignored; `.env.example` is the committed reference.
 
@@ -126,7 +153,10 @@ errors on submit.
 To rate-limit that endpoint in production, also attach an **Upstash for Redis** store from the same
 **Storage** tab. Vercel injects the REST credentials automatically (`KV_REST_API_URL` /
 `KV_REST_API_TOKEN`), which `lib/rate-limit.ts` picks up — then redeploy. Skip this and the route
-still works, just without rate limiting. See [Abuse protection](#abuse-protection).
+still works, just without rate limiting. See [Abuse protection](#abuse-protection). The same store
+also backs the live-scores cache, which is what keeps the football-data.org free tier sufficient
+under real traffic — set `FOOTBALL_API_KEY` in the project's environment variables to enable real
+scores (see [Live scores](#live-scores)).
 
 When you attach a custom domain, set an environment variable so SEO metadata uses it:
 

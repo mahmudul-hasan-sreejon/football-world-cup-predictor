@@ -17,8 +17,14 @@ export function useLiveScores(): { live: LiveMatch[]; demoFeed: boolean } {
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined;
     let stop = false;
+    // What's currently on screen — drives the cadence, so a transient empty
+    // response mid-match doesn't drop us to the slow interval.
+    let shown: LiveMatch[] = [];
+    // Consecutive empty responses; bounds the quick-retry burst below.
+    let misses = 0;
     const FAST = 30_000,
-      SLOW = 300_000;
+      SLOW = 300_000,
+      RETRY = 3_000;
 
     async function tick() {
       if (stop || document.hidden) return; // hidden: onVisible restarts us
@@ -28,10 +34,23 @@ export function useLiveScores(): { live: LiveMatch[]; demoFeed: boolean } {
         const data = await res.json();
         const ms: LiveMatch[] = Array.isArray(data?.matches) ? data.matches : [];
         if (!stop) {
-          setLive(ms);
-          setDemoFeed(!!data?.demo);
+          // An empty list is the server's transient fallback (cache-miss lock
+          // lost, upstream error) — keep what's on screen rather than wiping
+          // live scores; a follow-up tick will catch up.
+          if (ms.length > 0) {
+            shown = ms;
+            misses = 0;
+            setLive(ms);
+            setDemoFeed(!!data?.demo);
+          } else {
+            misses++;
+          }
         }
-        if (ms.some((m) => m.isLive)) next = FAST;
+        if (shown.some((m) => m.isLive)) next = FAST;
+        // After a transient empty, real data is usually in the cache within
+        // seconds — retry quickly a few times before falling back to the
+        // regular cadence (so first load isn't blank until the next interval).
+        if (ms.length === 0 && misses <= 3) next = RETRY;
       } catch {}
       if (!stop) timer = setTimeout(tick, next);
     }
