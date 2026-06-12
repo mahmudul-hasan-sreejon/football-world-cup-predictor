@@ -215,12 +215,12 @@ export function demoMatches(): LiveMatch[] {
 
 // The matches worth showing in the banner: anything in play, or kicking off
 // within the look-ahead window — today through `days` days from now (inclusive,
-// UTC calendar days). `now` is passed in (never read here) so this stays pure
-// and testable.
+// UTC calendar days), i.e. the default covers today and tomorrow. `now` is
+// passed in (never read here) so this stays pure and testable.
 export function upcomingOrLive(
   matches: LiveMatch[],
   now: string,
-  days = 3,
+  days = 1,
 ): LiveMatch[] {
   const today = now.slice(0, 10); // YYYY-MM-DD
   const horizon = new Date(now);

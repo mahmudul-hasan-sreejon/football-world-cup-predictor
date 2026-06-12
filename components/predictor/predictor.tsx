@@ -216,7 +216,7 @@ export default function Predictor() {
   const champ = champion(state);
 
   // Matches to surface in the banner. The demo feed is curated, so show it all;
-  // real data is filtered to in-play now or kicking off in the next few days.
+  // real data is filtered to in-play now or kicking off today or tomorrow.
   const liveBanner = !mounted
     ? []
     : demoFeed

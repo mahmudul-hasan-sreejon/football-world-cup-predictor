@@ -35,8 +35,8 @@ Crowning a champion fires a confetti burst (skipped for users who prefer reduced
 modal to optionally subscribe with an email — the only thing saved server-side, in Vercel Postgres
 (see [Configuration](#configuration)).
 
-Above the stages, a **Live & Latest Results** strip shows in-play and upcoming matches, polled from a
-cached `/api/scores` endpoint; it falls back to a curated demo feed when no football-data.org key is
+Above the stages, a **Live & Latest Results** strip shows in-play matches plus those scheduled for
+today and tomorrow, polled from a cached `/api/scores` endpoint; it falls back to a curated demo feed when no football-data.org key is
 configured (see [Live scores](#live-scores)). The whole predictor renders a shimmering skeleton until
 it mounts on the client, so the real picks and live data fade in without a layout pop-in.
 

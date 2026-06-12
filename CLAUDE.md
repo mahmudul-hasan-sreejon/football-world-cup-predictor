@@ -131,8 +131,9 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   real data; `demoMatches()` is the stand-in feed the route serves without a key. Each match also
   carries the upstream `stage` id (`stageTag()` maps it to a short knockout label for the
   fixtures list; null on cached payloads that predate the field).
-  `upcomingOrLive(matches, now, days=3)` is the pure filter for "in
-  play, or kicking off within the next `days` days"; `isFinished(m)` marks the immutable results
+  `upcomingOrLive(matches, now, days=1)` is the pure filter for "in
+  play, or kicking off within the next `days` days" (the default covers today
+  and tomorrow); `isFinished(m)` marks the immutable results
   worth persisting, and `anyPotentiallyLive(matches, now)` is the pure gate the scores route uses
   to decide whether upstream needs calling at all (live in the snapshot, or kicked off within the
   last ~3.5h and not finished). The `useLiveScores` hook
