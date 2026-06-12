@@ -2,6 +2,12 @@ import { useEffect, useState, type MouseEvent } from "react";
 
 export type Theme = "dark" | "light";
 
+// Cross-island sync: the hook is mounted twice (the navbar's ThemeToggle and
+// the predictor, for the Toaster), so every commit is broadcast and every
+// instance listens — otherwise the copy that didn't handle the click would
+// keep a stale `theme`.
+const THEME_EVENT = "wc26-theme";
+
 // Owns the active theme and the toggle. The no-flash inline script in
 // `app/layout.tsx` applies the persisted theme before hydration; here we sync
 // our label off it on mount, then drive future changes ourselves.
@@ -17,6 +23,9 @@ export function useTheme(): {
         localStorage.getItem("wc26-theme") === "light" ? "light" : "dark",
       );
     } catch (e) {}
+    const onTheme = (e: Event) => setTheme((e as CustomEvent<Theme>).detail);
+    window.addEventListener(THEME_EVENT, onTheme);
+    return () => window.removeEventListener(THEME_EVENT, onTheme);
   }, []);
 
   function applyTheme(t: Theme) {
@@ -28,6 +37,7 @@ export function useTheme(): {
     try {
       localStorage.setItem("wc26-theme", t);
     } catch (e) {}
+    window.dispatchEvent(new CustomEvent<Theme>(THEME_EVENT, { detail: t }));
   }
   function toggleTheme(e: MouseEvent<HTMLButtonElement>) {
     const btn = e.currentTarget;

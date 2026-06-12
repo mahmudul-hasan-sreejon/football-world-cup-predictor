@@ -30,7 +30,7 @@ export function LiveBanner({
   demoFeed: boolean;
 }) {
   return (
-    <section className="livewrap" aria-label="Live and upcoming scores">
+    <section id="live" className="livewrap" aria-label="Live and upcoming scores">
       <div className="livehead">
         <span className="livedot" aria-hidden="true" />
         <h2 className="livehd-title">Live &amp; Latest Results</h2>

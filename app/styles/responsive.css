@@ -103,7 +103,7 @@
   }
   .bar {
     position: sticky;
-    top: 0;
+    top: var(--topnav-h); /* stick just below the top navbar */
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;

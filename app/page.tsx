@@ -39,7 +39,7 @@ export default function Home() {
         predictions. Your picks reset on reload.
       </p>
 
-      <section className="seo-block" aria-labelledby="groups-title">
+      <section id="groups" className="seo-block" aria-labelledby="groups-title">
         <h2 id="groups-title" className="seo-title">
           The 12 Groups of the 2026 World Cup
         </h2>
@@ -63,7 +63,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="seo-block" aria-labelledby="faq-title">
+      <section id="faq" className="seo-block" aria-labelledby="faq-title">
         <h2 id="faq-title" className="seo-title">
           Frequently Asked Questions
         </h2>

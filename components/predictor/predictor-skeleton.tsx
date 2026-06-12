@@ -9,7 +9,7 @@ const GROUP_LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L
 
 function LiveBannerSkeleton() {
   return (
-    <section className="livewrap" aria-hidden="true">
+    <section id="live" className="livewrap" aria-hidden="true">
       <div className="livehead">
         <span className="livedot" />
         <Skeleton style={{ height: 13, width: 170 }} />
@@ -55,7 +55,6 @@ function NavSkeleton() {
       <div className="actions">
         <Skeleton style={{ height: 32, width: 150, borderRadius: 999 }} />
         <Skeleton style={{ height: 32, width: 64, borderRadius: 999 }} />
-        <Skeleton style={{ height: 32, width: 76, borderRadius: 999 }} />
       </div>
     </nav>
   );
@@ -100,8 +99,12 @@ export function PredictorSkeleton() {
   return (
     <>
       <LiveBannerSkeleton />
-      <NavSkeleton />
-      <GroupsStageSkeleton />
+      {/* Mirrors the real Tabs root, which carries id="fixture", so the
+          navbar's anchor works before the predictor mounts. */}
+      <div id="fixture">
+        <NavSkeleton />
+        <GroupsStageSkeleton />
+      </div>
     </>
   );
 }

@@ -42,6 +42,9 @@ html.light body::before {
   opacity: 0.5;
   mix-blend-mode: multiply;
 }
+html.light .topnav {
+  background: rgba(255, 255, 255, 0.78);
+}
 html.light .bar {
   background: rgba(255, 255, 255, 0.78);
 }

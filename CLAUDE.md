@@ -37,9 +37,10 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   - `predictor-skeleton.tsx` — the whole-page loading state the container renders while `mounted`
     is false. It reuses the real layout classes (`.livewrap`/`.bar`/`.groups`/…) filled with
     `<Skeleton>` blocks, so the server render and the pre-hydration client render match (no pop-in).
-  - `use-live-scores.ts` (the self-rescheduling `/api/scores` poller — ignores transient empty
-    payloads and quick-retries them rather than wiping on-screen scores) and `use-theme.ts` (theme
-    state + the view-transition toggle) — the two effect-heavy concerns extracted as hooks.
+  - `use-live-scores.ts` — the self-rescheduling `/api/scores` poller (ignores transient empty
+    payloads and quick-retries them rather than wiping on-screen scores), extracted as a hook.
+    Theme state lives outside the predictor in `components/use-theme.ts` (see `site-nav.tsx`
+    below); the container still calls it, but only to keep the Toaster's `theme` in sync.
   - `ad-slot.tsx` — a reusable `<AdSlot id src>` for a single Adsterra ad unit (e.g. a Native
     Banner). Loads Adsterra's `invoke.js` via `next/script` (`afterInteractive`) and renders the
     matching `container-<id>` div; the script injects the ad client-side, outside React's tree, so
@@ -52,6 +53,16 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   summary (from `TEAMS`/`GROUPS` via `@/lib/bracket`) and the FAQ (from `lib/faq.ts`). These are
   the page's indexable copy: the predictor itself is client-only (the server renders only its
   skeleton). Styled by `app/styles/seo.css`.
+- **`components/site-nav.tsx`** — the sticky top navbar (server component, rendered by
+  `layout.tsx` above `children`): favicon + site name plus anchor links to the index sections —
+  `#live` (live banner), `#groups` (groups summary), `#fixture` (the predictor's `Tabs` root; the
+  skeleton mirrors the id on a plain div), `#faq`. Also hosts the theme toggle
+  (`components/theme-toggle.tsx`, the navbar's one client island), backed by
+  `components/use-theme.ts` — theme state + the view-transition toggle. The hook is mounted twice
+  (toggle + the predictor's Toaster), so commits are broadcast via a window event to keep both
+  instances in sync. Styled by `app/styles/topnav.css`, which also
+  sets the sections' `scroll-margin-top` so anchors land below the bar; the sticky stage `.bar`
+  offsets its `top` by `--topnav-h` (see `responsive.css`).
 - **`app/layout.tsx`** — SEO via the Metadata API (title template, keywords, author/publisher,
   `googleBot` directives, Open Graph, Twitter), Google Fonts, a no-flash inline theme script, and
   a JSON-LD `@graph` bundling `WebApplication` + `SportsEvent` + `FAQPage`. The FAQ entries live in
@@ -63,7 +74,7 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   by `@import "./styles/*.css"`. The bespoke rules are **unlayered**, so cascade order is import
   order — keep the `@import` sequence intact, and keep `theme-light.css`/`glass.css`/`glass-light.css`
   last so they override the base look. The partials under **`app/styles/`** are split by concern
-  (`base`, `header`, `live-scores`, `nav`, `stage`, `groups`, `thirds`, `champion`, `modal`,
+  (`base`, `topnav`, `header`, `live-scores`, `nav`, `stage`, `groups`, `thirds`, `champion`, `modal`,
   `bracket`, `footer`, `seo`, `adslot`, `skeleton`, `responsive`, plus the theme/glass overrides). Theming is driven by a `light`
   class on `<html>`.
 - **`app/confetti.ts`** — dependency-free canvas confetti (`fireConfetti()`); client-only, self-cleans

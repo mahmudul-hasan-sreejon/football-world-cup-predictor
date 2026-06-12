@@ -10,6 +10,7 @@
    means cascade order is import order — keep these in sequence. The two theme/
    glass override files must stay last so they can override the base look. */
 @import "./styles/base.css"; /* tokens, resets, page shell */
+@import "./styles/topnav.css"; /* sticky top navbar + anchor offsets */
 @import "./styles/header.css"; /* hero */
 @import "./styles/live-scores.css"; /* live banner + section divider */
 @import "./styles/nav.css"; /* stage tabs + action buttons */

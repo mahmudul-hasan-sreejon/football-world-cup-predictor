@@ -1,3 +1,4 @@
+import { SiteNav } from "@/components/site-nav";
 import { FAQS } from "@/lib/faq";
 import { SITE_URL } from "@/lib/site";
 import type { Metadata, Viewport } from "next";
@@ -139,7 +140,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        <SiteNav />
+        {children}
+      </body>
     </html>
   );
 }

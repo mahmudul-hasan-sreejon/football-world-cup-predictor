@@ -33,8 +33,8 @@ import { Nav } from "./nav";
 import { PredictorSkeleton } from "./predictor-skeleton";
 import { SubscribeDialog } from "./subscribe-dialog";
 import { ThirdsStage } from "./thirds-stage";
+import { useTheme } from "@/components/use-theme";
 import { useLiveScores } from "./use-live-scores";
-import { useTheme } from "./use-theme";
 import { useTileReveal } from "./use-tile-reveal";
 
 export default function Predictor() {
@@ -54,7 +54,9 @@ export default function Predictor() {
   const [submitting, setSubmitting] = useState(false);
   const [subOpen, setSubOpen] = useState(false);
 
-  const { theme, toggleTheme } = useTheme();
+  // Theme is toggled from the navbar (components/theme-toggle.tsx); this
+  // instance only follows along so the Toaster matches.
+  const { theme } = useTheme();
   const { live, demoFeed } = useLiveScores();
   useTileReveal();
 
@@ -241,7 +243,6 @@ export default function Predictor() {
     { k: "thirds", num: "2", label: "Best Thirds", done: thirds.size === 8 },
     { k: "ko", num: "3", label: "Knockout", done: !!champ },
   ];
-  const themeLabel = theme === "light" ? "🌙 Dark" : "☀️ Light";
 
   return (
     <>
@@ -249,15 +250,8 @@ export default function Predictor() {
         <LiveBanner matches={liveBanner} demoFeed={demoFeed} />
       )}
 
-      <Tabs value={stage} onValueChange={go}>
-        <Nav
-          tabs={tabs}
-          stage={stage}
-          themeLabel={themeLabel}
-          onAutoPick={autoPick}
-          onReset={resetAll}
-          onToggleTheme={toggleTheme}
-        />
+      <Tabs id="fixture" value={stage} onValueChange={go}>
+        <Nav tabs={tabs} stage={stage} onAutoPick={autoPick} onReset={resetAll} />
 
         <GroupsStage
           order={order}
