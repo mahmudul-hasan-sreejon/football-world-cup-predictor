@@ -145,10 +145,13 @@
   }
 }
 
-/* Tablets up: group cards go multi-column */
+/* Tablets up: group cards go multi-column, fixture days fan out */
 @media (min-width: 680px) {
   .groups {
     grid-template-columns: repeat(auto-fill, minmax(252px, 1fr));
+  }
+  .fx-list {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   }
 }
 

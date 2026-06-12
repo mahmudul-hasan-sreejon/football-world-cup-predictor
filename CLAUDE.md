@@ -37,10 +37,10 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   - `predictor-skeleton.tsx` — the whole-page loading state the container renders while `mounted`
     is false. It reuses the real layout classes (`.livewrap`/`.bar`/`.groups`/…) filled with
     `<Skeleton>` blocks, so the server render and the pre-hydration client render match (no pop-in).
-  - `use-live-scores.ts` — the self-rescheduling `/api/scores` poller (ignores transient empty
-    payloads and quick-retries them rather than wiping on-screen scores), extracted as a hook.
-    Theme state lives outside the predictor in `components/use-theme.ts` (see `site-nav.tsx`
-    below); the container still calls it, but only to keep the Toaster's `theme` in sync.
+  - Theme state lives outside the predictor in `components/use-theme.ts` (see `site-nav.tsx`
+    below); the container still calls it, but only to keep the Toaster's `theme` in sync. The
+    `/api/scores` poller likewise lives at `components/use-live-scores.ts`, shared with the
+    fixtures list.
   - `ad-slot.tsx` — a reusable `<AdSlot id src>` for a single Adsterra ad unit (e.g. a Native
     Banner). Loads Adsterra's `invoke.js` via `next/script` (`afterInteractive`) and renders the
     matching `container-<id>` div; the script injects the ad client-side, outside React's tree, so
@@ -52,12 +52,18 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   Between the data note and the ad it renders two static, crawlable sections — the 12-group/48-team
   summary (from `TEAMS`/`GROUPS` via `@/lib/bracket`) and the FAQ (from `lib/faq.ts`). These are
   the page's indexable copy: the predictor itself is client-only (the server renders only its
-  skeleton). Styled by `app/styles/seo.css`.
+  skeleton). Styled by `app/styles/seo.css`. Between them sits the `#fixture` section: a
+  server-rendered heading plus **`components/fixture-list.tsx`** (client), the full tournament
+  schedule grouped by local calendar day. It reuses `useLiveScores` — the `/api/scores` payload
+  carries every match, not just upcoming ones — so scores/statuses update in place; rows are
+  tagged `Grp X` for group games or via `stageTag()` for knockout rounds. Pre-data it renders a
+  skeleton day (also what the server sends, so locale date formatting never hits hydration).
+  Styled by `app/styles/fixtures.css`.
 - **`components/site-nav.tsx`** — the sticky top navbar (server component, rendered by
   `layout.tsx` above `children`): favicon + site name plus anchor links to the index sections —
   `#live` (live banner), `#prediction` (the predictor's `Tabs` root; the skeleton mirrors the id
-  on a plain div), `#groups` (groups summary), `#fixture` (no target yet — reserved for the
-  planned match-fixtures section), `#faq`. Also hosts the theme toggle
+  on a plain div), `#groups` (groups summary), `#fixture` (the tournament schedule), `#faq`. Also
+  hosts the theme toggle
   (`components/theme-toggle.tsx`, the navbar's one client island), backed by
   `components/use-theme.ts` — theme state + the view-transition toggle. The hook is mounted twice
   (toggle + the predictor's Toaster), so commits are broadcast via a window event to keep both
@@ -77,7 +83,7 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   order — keep the `@import` sequence intact, and keep `theme-light.css`/`glass.css`/`glass-light.css`
   last so they override the base look. The partials under **`app/styles/`** are split by concern
   (`base`, `topnav`, `header`, `live-scores`, `nav`, `stage`, `groups`, `thirds`, `champion`, `modal`,
-  `bracket`, `footer`, `seo`, `adslot`, `skeleton`, `responsive`, plus the theme/glass overrides). Theming is driven by a `light`
+  `bracket`, `footer`, `seo`, `fixtures`, `adslot`, `skeleton`, `responsive`, plus the theme/glass overrides). Theming is driven by a `light`
   class on `<html>`.
 - **`app/confetti.ts`** — dependency-free canvas confetti (`fireConfetti()`); client-only, self-cleans
   the canvas, and no-ops under `prefers-reduced-motion`. Fired from `predictor.tsx` on champion.
@@ -110,7 +116,9 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   table, and tags each with its `group` letter and (via `statusLabel`) a LIVE/SOON/FT badge.
   Returns `[]` when the key is unset and **throws** when the request fails or exceeds its 8s
   timeout, so the route's catch path skips the cache write instead of caching an empty list as
-  real data; `demoMatches()` is the stand-in feed the route serves without a key.
+  real data; `demoMatches()` is the stand-in feed the route serves without a key. Each match also
+  carries the upstream `stage` id (`stageTag()` maps it to a short knockout label for the
+  fixtures list; null on cached payloads that predate the field).
   `upcomingOrLive(matches, now, days=3)` is the pure filter for "in
   play, or kicking off within the next `days` days". The `useLiveScores` hook
   (`components/predictor/use-live-scores.ts`) polls `/api/scores` (paused while the tab is hidden,

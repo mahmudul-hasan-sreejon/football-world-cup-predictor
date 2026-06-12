@@ -4,9 +4,9 @@ import { ThemeToggle } from "./theme-toggle";
 // Sticky top navbar — static site chrome rendered by the root layout (server
 // component; the theme toggle is its one client island). The menu items are
 // in-page anchors to the index sections: the live-scores strip (#live), the
-// predictor (#prediction), the server-rendered groups summary (#groups), and
-// the FAQ (#faq). #fixture has no target yet — it's reserved for the upcoming
-// World Cup 2026 match-fixtures section. Styled by app/styles/topnav.css.
+// predictor (#prediction), the server-rendered groups summary (#groups), the
+// tournament schedule (#fixture), and the FAQ (#faq). Styled by
+// app/styles/topnav.css.
 export function SiteNav() {
   return (
     <nav className="topnav" aria-label="Site">

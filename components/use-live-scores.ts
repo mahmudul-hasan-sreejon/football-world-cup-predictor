@@ -3,6 +3,9 @@ import type { LiveMatch } from "@/lib/scores";
 
 // Polls our own Redis-cached /api/scores endpoint and returns the latest
 // matches plus whether the endpoint is serving the stand-in demo feed.
+// Mounted independently by the live banner (via the predictor) and the
+// fixtures list — each instance runs its own loop, which is fine because the
+// endpoint is cached and the loops are cheap.
 //
 // The timer is self-rescheduling. The endpoint is cached, so however often we
 // poll, upstream is only hit ~once per cache window. We still keep our own

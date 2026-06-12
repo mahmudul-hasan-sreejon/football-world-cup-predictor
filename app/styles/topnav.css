@@ -96,8 +96,7 @@
 }
 /* Anchor targets get breathing room when scrolled to; while the navbar isn't
    sticky (phones) the page edge is the only offset needed — responsive.css
-   adds the navbar height once it sticks (#fixture is the future
-   match-fixtures section) */
+   adds the navbar height once it sticks */
 #live,
 #prediction,
 #groups,

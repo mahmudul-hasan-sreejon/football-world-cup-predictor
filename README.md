@@ -114,10 +114,13 @@ to bloat the `subscribers` table (see `app/api/subscribe/route.ts` and `lib/rate
 
 - `app/layout.tsx` — root layout, SEO metadata, fonts, JSON-LD (`WebApplication` + `SportsEvent` + `FAQPage`), no-flash theme script; renders the sticky top navbar above the page
 - `components/site-nav.tsx` — the top navbar: favicon + site name, anchor links to the page sections
-  (`#live`, `#prediction`, `#groups`, `#fixture` — the latter reserved for the planned match-fixtures
-  section — and `#faq`), and the theme toggle (`theme-toggle.tsx`, backed by the shared `use-theme` hook)
-- `app/page.tsx` — static hero/footer, mounts the predictor; also server-renders the 12-group/48-team
-  summary and FAQ sections — the page's crawlable copy, since the predictor itself is client-only
+  (`#live`, `#prediction`, `#groups`, `#fixture`, `#faq`), and the theme toggle (`theme-toggle.tsx`,
+  backed by the shared `use-theme` hook)
+- `components/fixture-list.tsx` — the full tournament schedule (all 104 matches grouped by day, live
+  scores in place), fed by the shared `use-live-scores` hook; the body of the `#fixture` section
+- `app/page.tsx` — static hero/footer, mounts the predictor and the fixtures section; also
+  server-renders the 12-group/48-team summary and FAQ sections — the page's crawlable copy, since
+  the predictor itself is client-only
 - `app/confetti.ts` — dependency-free canvas confetti burst for the champion celebration
 - `app/globals.css` — stylesheet entry point; imports the per-concern partials under `app/styles/`
 - `app/icon.svg` — favicon (served as `/icon.svg`)
@@ -128,8 +131,8 @@ to bloat the `subscribers` table (see `app/api/subscribe/route.ts` and `lib/rate
 - `app/api/scores/route.ts` — GET endpoint the client polls for live scores (Redis-cached, demo-feed fallback)
 - `components/predictor/` — the interactive UI: a stateful container (`predictor.tsx`) plus presentational
   stages (`groups-stage`, `thirds-stage`, `knockout-stage`), `nav`, `live-banner`, `subscribe-dialog`, the
-  pre-mount `predictor-skeleton`, the `ad-slot` wrapper for Adsterra units, and the
-  `use-live-scores` hook
+  pre-mount `predictor-skeleton`, and the `ad-slot` wrapper for Adsterra units (the shared
+  `use-live-scores` poller lives at `components/use-live-scores.ts`)
 - `components/ui/` — shadcn/ui primitives, structural wrappers over the bespoke CSS (badge, button, card,
   dialog, input, tabs, sonner toaster, skeleton)
 - `lib/bracket.ts` — tournament types + pure bracket logic (resolve/validate); re-exports `lib/annex.ts`

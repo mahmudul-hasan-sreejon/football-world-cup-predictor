@@ -23,6 +23,7 @@
 @import "./styles/reveal.css"; /* cursor-following tile border highlight */
 @import "./styles/footer.css"; /* data note + footer */
 @import "./styles/seo.css"; /* server-rendered groups summary + FAQ */
+@import "./styles/fixtures.css"; /* day-grouped tournament schedule */
 @import "./styles/adslot.css"; /* adsterra native banner slot */
 @import "./styles/skeleton.css"; /* loading placeholders (pre-mount) */
 @import "./styles/responsive.css"; /* mobile-first media queries */

@@ -1,4 +1,5 @@
 import Predictor from "@/components/predictor/predictor";
+import { FixtureList } from "@/components/fixture-list";
 import { AdSlot } from "@/components/predictor/ad-slot";
 import { GROUPS, TEAMS } from "@/lib/bracket";
 import { FAQS } from "@/lib/faq";
@@ -61,6 +62,18 @@ export default function Home() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section id="fixture" className="seo-block" aria-labelledby="fixture-title">
+        <h2 id="fixture-title" className="sec-title">
+          FIFA World Cup 2026 Fixtures
+        </h2>
+        <p className="seo-sub">
+          Every match of the tournament — all 104 fixtures from the group
+          stage to the Final, with live scores as they happen. Kickoff times
+          are shown in your local time.
+        </p>
+        <FixtureList />
       </section>
 
       <section id="faq" className="seo-block" aria-labelledby="faq-title">

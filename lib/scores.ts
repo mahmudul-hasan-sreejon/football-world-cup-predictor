@@ -14,6 +14,7 @@ export interface LiveMatch {
   awayScore: number | null;
   isLive: boolean; // true while the ball is in play
   group: string | null; // group letter (e.g. "H") for group-stage ties, else null
+  stage: string | null; // upstream stage id (e.g. "LAST_32"); null when unknown
 }
 
 // In-play statuses where a live score is meaningful and we want to poll faster.
@@ -25,6 +26,21 @@ export function statusLabel(m: LiveMatch): "LIVE" | "FT" | "SOON" {
   if (m.isLive) return "LIVE";
   if (DONE_STATUSES.has(m.status)) return "FT";
   return "SOON";
+}
+
+// Short round tag for a fixture row. Group games are tagged with their group
+// letter instead, so only the knockout stages are mapped; null for the group
+// stage, unknown ids, and cached payloads that predate the `stage` field.
+const STAGE_TAGS: Record<string, string> = {
+  LAST_32: "R32",
+  LAST_16: "R16",
+  QUARTER_FINALS: "QF",
+  SEMI_FINALS: "SF",
+  THIRD_PLACE: "3rd",
+  FINAL: "Final",
+};
+export function stageTag(stage: string | null): string | null {
+  return stage ? (STAGE_TAGS[stage] ?? null) : null;
 }
 
 // Flag emoji by lowercased team name, derived from our own tournament data so a
@@ -72,6 +88,7 @@ interface RawMatch {
   awayTeam?: { name?: string };
   score?: { fullTime?: { home?: number | null; away?: number | null } };
   group?: string; // e.g. "GROUP_A" during the group stage, null in the knockouts
+  stage?: string; // e.g. "GROUP_STAGE", "LAST_32", ..., "FINAL"
 }
 
 // "GROUP_A" -> "A"; anything else (knockout ties) -> null.
@@ -99,6 +116,7 @@ function normalise(m: RawMatch): LiveMatch | null {
     awayScore: typeof ft.away === "number" ? ft.away : null,
     isLive: LIVE_STATUSES.has(m.status ?? ""),
     group: groupLetter(m.group),
+    stage: m.stage ?? null,
   };
 }
 
@@ -154,6 +172,7 @@ export function demoMatches(): LiveMatch[] {
     awayScore,
     isLive: LIVE_STATUSES.has(status),
     group,
+    stage: "GROUP_STAGE", // every demo fixture is a group game
   });
   return [
     mk(9001, "Spain", "Uruguay", 1, 1, "IN_PLAY", "H", "2026-06-25T16:00:00Z"),

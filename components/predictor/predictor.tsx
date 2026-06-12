@@ -33,8 +33,8 @@ import { Nav } from "./nav";
 import { PredictorSkeleton } from "./predictor-skeleton";
 import { SubscribeDialog } from "./subscribe-dialog";
 import { ThirdsStage } from "./thirds-stage";
+import { useLiveScores } from "@/components/use-live-scores";
 import { useTheme } from "@/components/use-theme";
-import { useLiveScores } from "./use-live-scores";
 import { useTileReveal } from "./use-tile-reveal";
 
 export default function Predictor() {
