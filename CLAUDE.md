@@ -82,6 +82,12 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   the on-page copy stay in sync by construction (Google only honors FAQ markup whose copy is
   visible on the page). `<html>`/`<body>` use
   `suppressHydrationWarning` because that script mutates the class before hydration.
+  Two Google integrations are wired here, both **env-driven and no-op when unset**
+  (mirroring `FOOTBALL_API_KEY`): Google Analytics 4 mounts via `@next/third-parties`
+  (`<GoogleAnalytics gaId>` in `<body>`) only when `NEXT_PUBLIC_GA_ID` is set, and the
+  Search Console `<meta name="google-site-verification">` tag is emitted via the Metadata
+  API's `verification.google` only when `GOOGLE_SITE_VERIFICATION` is set. Both vars are
+  documented in `.env.example`.
 - **`app/globals.css`** — the stylesheet entry point: the Tailwind theme/utilities imports followed
   by `@import "./styles/*.css"`. The bespoke rules are **unlayered**, so cascade order is import
   order — keep the `@import` sequence intact, and keep `theme-light.css`/`glass.css`/`glass-light.css`
