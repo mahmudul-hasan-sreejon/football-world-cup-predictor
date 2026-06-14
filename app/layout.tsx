@@ -1,9 +1,16 @@
 import { SiteNav } from "@/components/site-nav";
 import { FAQS } from "@/lib/faq";
 import { SITE_URL } from "@/lib/site";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
+
+// Google integrations are env-driven and no-op when unset (cf. FOOTBALL_API_KEY):
+//   NEXT_PUBLIC_GA_ID            — GA4 Measurement ID (G-XXXXXXXXXX)
+//   GOOGLE_SITE_VERIFICATION     — Search Console verification token
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+const GOOGLE_VERIFICATION = process.env.GOOGLE_SITE_VERIFICATION;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -43,6 +50,9 @@ export const metadata: Metadata = {
     },
   },
   alternates: { canonical: SITE_URL },
+  ...(GOOGLE_VERIFICATION
+    ? { verification: { google: GOOGLE_VERIFICATION } }
+    : {}),
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -143,6 +153,7 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <SiteNav />
         {children}
+        {GA_ID ? <GoogleAnalytics gaId={GA_ID} /> : null}
       </body>
     </html>
   );
