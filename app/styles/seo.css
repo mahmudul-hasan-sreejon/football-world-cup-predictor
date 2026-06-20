@@ -150,7 +150,6 @@
   color: var(--muted2);
   font-size: 13.5px;
   line-height: 1.6;
-  max-width: 80ch;
 }
 @media (prefers-reduced-motion: reduce) {
   .seo-faq-answer,
