@@ -41,6 +41,12 @@ There are no automated tests; verify changes by running `npm run build` (type ch
     below); the container still calls it, but only to keep the Toaster's `theme` in sync. The
     `/api/scores` poller likewise lives at `components/use-live-scores.ts`, shared with the
     fixtures list.
+  - `use-tile-reveal.ts` — the Windows-tile/Fluent "reveal" hover: a soft light tracks the cursor
+    along a card's border. The container calls it once; it attaches a single delegated `document`
+    `pointermove` listener (rAF-coalesced) that writes the cursor position into `--mx`/`--my` on the
+    hovered card, and `app/styles/reveal.css` paints the border glow. Cards opt in app-wide by adding
+    the `.reveal` class — the predictor stage cards plus the groups summary (`.seo-group`), fixtures
+    (`.fx-row`), and FAQ (`.seo-faq-item`) — and the one listener covers them all.
   - `ad-slot.tsx` — a reusable `<AdSlot id src>` for a single Adsterra ad unit (e.g. a Native
     Banner). Loads Adsterra's `invoke.js` via `next/script` (`afterInteractive`) and renders the
     matching `container-<id>` div; the script injects the ad client-side, outside React's tree, so
@@ -54,9 +60,14 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   **`components/faq.tsx`** (client): a shadcn/Radix single-open accordion over `lib/faq.ts`, mounted
   under a server-rendered `#faq` heading. Its answers are **force-mounted and collapsed purely with
   CSS** (see `components/ui/accordion.tsx`), so every answer ships in the server HTML — crawlable and
-  in sync with the FAQPage JSON-LD — even while a panel is visually collapsed. These two sections are
-  the page's indexable copy: the predictor itself is client-only (the server renders only its
-  skeleton). Styled by `app/styles/seo.css`. Between them sits the `#fixture` section: a
+  in sync with the FAQPage JSON-LD — even while a panel is visually collapsed. On mount it shows a
+  shadcn `Skeleton` for ~700ms then crossfades to the accordion (to mirror the predictor/fixtures
+  loading feel); the skeleton and the real accordion are **stacked in one grid cell** and the
+  accordion is only faded out via `opacity` (never `hidden`/`display:none`), so the crawlable copy is
+  never stripped from the HTML — the skeleton is a cosmetic overlay, not a mount gate. Each item also
+  carries the `.reveal` class for the shared cursor-tracking hover glow (see `use-tile-reveal.ts`).
+  These two sections are the page's indexable copy: the predictor itself is client-only (the server
+  renders only its skeleton). Styled by `app/styles/seo.css`. Between them sits the `#fixture` section: a
   server-rendered heading plus **`components/fixture-list.tsx`** (client), the full tournament
   schedule grouped by local calendar day. It reuses `useLiveScores` — the `/api/scores` payload
   carries every match, not just upcoming ones — so scores/statuses update in place; rows are
@@ -97,7 +108,8 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   order — keep the `@import` sequence intact, and keep `theme-light.css`/`glass.css`/`glass-light.css`
   last so they override the base look. The partials under **`app/styles/`** are split by concern
   (`base`, `topnav`, `header`, `live-scores`, `nav`, `stage`, `groups`, `thirds`, `champion`, `modal`,
-  `bracket`, `footer`, `seo`, `fixtures`, `adslot`, `skeleton`, `responsive`, plus the theme/glass overrides). Theming is driven by a `light`
+  `bracket`, `footer`, `seo`, `fixtures`, `adslot`, `skeleton`, `reveal`, `transitions`, `responsive`,
+  plus the theme/glass overrides). Theming is driven by a `light`
   class on `<html>`. Every top-level section heading (live banner, the three predictor stages,
   groups summary, fixtures, FAQ) shares the `.sec-title` rule in `base.css` — restyle headings
   there, not per section.

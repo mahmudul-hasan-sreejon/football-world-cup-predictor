@@ -143,7 +143,9 @@ to bloat the `subscribers` table (see `app/api/subscribe/route.ts` and `lib/rate
   itself is client-only
 - `components/faq.tsx` — the FAQ section's interactive shell: a shadcn/Radix accordion over
   `lib/faq.ts`. Its answers are force-mounted (collapsed by CSS, not unmounted), so the copy still
-  ships in the server HTML and stays in sync with the `FAQPage` JSON-LD
+  ships in the server HTML and stays in sync with the `FAQPage` JSON-LD. On mount it briefly shows a
+  shadcn skeleton then crossfades to the accordion — purely cosmetic: the real content is stacked
+  under the skeleton and only faded via opacity, so the crawlable copy is never removed
 - `app/confetti.ts` — dependency-free canvas confetti burst for the champion celebration
 - `app/globals.css` — stylesheet entry point; imports the per-concern partials under `app/styles/`
 - `app/icon.svg` — favicon (served as `/icon.svg`)
@@ -157,7 +159,8 @@ to bloat the `subscribers` table (see `app/api/subscribe/route.ts` and `lib/rate
 - `components/predictor/` — the interactive UI: a stateful container (`predictor.tsx`) plus presentational
   stages (`groups-stage`, `thirds-stage`, `knockout-stage`), `nav`, `live-banner`, `subscribe-dialog`, the
   pre-mount `predictor-skeleton`, and the `ad-slot` wrapper for Adsterra units (the shared
-  `use-live-scores` poller lives at `components/use-live-scores.ts`)
+  `use-live-scores` poller lives at `components/use-live-scores.ts`, and `use-tile-reveal` powers the
+  cursor-tracking "reveal" hover glow shared by the cards across the page)
 - `components/ui/` — shadcn/ui primitives, structural wrappers over the bespoke CSS (accordion, badge,
   button, card, dialog, input, tabs, sonner toaster, skeleton)
 - `lib/bracket.ts` — tournament types + pure bracket logic (resolve/validate); re-exports `lib/annex.ts`

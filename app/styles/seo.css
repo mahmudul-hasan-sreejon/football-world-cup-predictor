@@ -50,11 +50,44 @@
 /* FAQ — a shadcn/Radix accordion (components/faq.tsx). Mobile-first: each item
    is a full-width glass row whose answer collapses with a CSS grid-rows
    transition. The answer stays in the DOM (force-mounted) for crawlers. */
-.seo-faq {
+.seo-faq,
+.seo-faq-skel {
   margin-top: 18px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+/* Faux "loading" crossfade: the skeleton and the real accordion are stacked in
+   one grid cell so the accordion's copy still ships in the server HTML (faded
+   via opacity, never hidden) while the skeleton shows briefly on mount. */
+.seo-faq-load {
+  display: grid;
+}
+.seo-faq-load > * {
+  grid-area: 1 / 1;
+}
+.seo-faq-load > .seo-faq,
+.seo-faq-load > .seo-faq-skel {
+  margin-top: 18px;
+  transition: opacity 0.35s ease;
+}
+.seo-faq-skel {
+  opacity: 0;
+  pointer-events: none;
+}
+.seo-faq-load[data-loading] > .seo-faq-skel {
+  opacity: 1;
+}
+.seo-faq-load[data-loading] > .seo-faq {
+  opacity: 0;
+  pointer-events: none;
+}
+.seo-faq-skel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: clamp(13px, 3.5vw, 16px) clamp(14px, 4vw, 18px);
 }
 .seo-faq-item {
   background: var(--panel);
@@ -121,7 +154,9 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .seo-faq-answer,
-  .seo-faq-chevron {
+  .seo-faq-chevron,
+  .seo-faq-load > .seo-faq,
+  .seo-faq-load > .seo-faq-skel {
     transition: none;
   }
 }
