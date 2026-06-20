@@ -1,4 +1,5 @@
 import { SiteNav } from "@/components/site-nav";
+import { TEAM_NAMES } from "@/lib/bracket";
 import { FAQS } from "@/lib/faq";
 import { SITE_URL } from "@/lib/site";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -106,11 +107,47 @@ const jsonLd = {
       endDate: "2026-07-19",
       eventStatus: "https://schema.org/EventScheduled",
       eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+      // Reuses the dynamic OG image (app/opengraph-image.tsx) so the Event
+      // image stays in sync with the social card.
+      image: [`${SITE_URL}/opengraph-image`],
+      // Place + PostalAddress (rather than bare Country) so Google's Event
+      // validator finds the recommended "address" field inside "location".
       location: [
-        { "@type": "Country", name: "United States" },
-        { "@type": "Country", name: "Canada" },
-        { "@type": "Country", name: "Mexico" },
+        {
+          "@type": "Place",
+          name: "United States",
+          address: { "@type": "PostalAddress", addressCountry: "US" },
+        },
+        {
+          "@type": "Place",
+          name: "Canada",
+          address: { "@type": "PostalAddress", addressCountry: "CA" },
+        },
+        {
+          "@type": "Place",
+          name: "Mexico",
+          address: { "@type": "PostalAddress", addressCountry: "MX" },
+        },
       ],
+      organizer: {
+        "@type": "SportsOrganization",
+        name: "FIFA",
+        url: "https://www.fifa.com",
+      },
+      // The 48 qualified national teams (from TEAMS via @/lib/bracket).
+      performer: [...TEAM_NAMES].map((name) => ({
+        "@type": "SportsTeam",
+        name,
+      })),
+      offers: {
+        "@type": "Offer",
+        name: "Match tickets",
+        url: "https://www.fifa.com/tickets",
+        availability: "https://schema.org/PreOrder",
+        price: "0",
+        priceCurrency: "USD",
+        validFrom: "2026-06-11",
+      },
     },
     {
       "@type": "FAQPage",
