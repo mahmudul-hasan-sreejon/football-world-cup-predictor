@@ -42,8 +42,9 @@ it mounts on the client, so the real picks and live data fade in without a layou
 
 Below the predictor, the page also serves as a reference: a crawlable summary of all 12 groups, a
 **Fixtures** section with the full 104-match schedule (grouped by day in your local time, with live
-scores updating in place — fed by the same cached endpoint), and an FAQ. A sticky top navbar links
-to each section — behind a hamburger menu on phones — and houses the light/dark theme toggle.
+scores updating in place — fed by the same cached endpoint), and a collapsible **FAQ** accordion. A
+sticky top navbar links to each section — behind a hamburger menu on phones — and houses the
+light/dark theme toggle.
 
 Your bracket picks live in memory only and reset on reload. **Auto-pick by ranking** fills the entire
 bracket from rough team-strength ratings as an editable starting point, and **Reset** clears it. The
@@ -137,9 +138,12 @@ to bloat the `subscribers` table (see `app/api/subscribe/route.ts` and `lib/rate
   backed by the shared `use-theme` hook)
 - `components/fixture-list.tsx` — the full tournament schedule (all 104 matches grouped by day, live
   scores in place), fed by the shared `use-live-scores` hook; the body of the `#fixture` section
-- `app/page.tsx` — static hero/footer, mounts the predictor and the fixtures section; also
-  server-renders the 12-group/48-team summary and FAQ sections — the page's crawlable copy, since
-  the predictor itself is client-only
+- `app/page.tsx` — static hero/footer, mounts the predictor and the fixtures section; also renders
+  the 12-group/48-team summary and FAQ sections — the page's crawlable copy, since the predictor
+  itself is client-only
+- `components/faq.tsx` — the FAQ section's interactive shell: a shadcn/Radix accordion over
+  `lib/faq.ts`. Its answers are force-mounted (collapsed by CSS, not unmounted), so the copy still
+  ships in the server HTML and stays in sync with the `FAQPage` JSON-LD
 - `app/confetti.ts` — dependency-free canvas confetti burst for the champion celebration
 - `app/globals.css` — stylesheet entry point; imports the per-concern partials under `app/styles/`
 - `app/icon.svg` — favicon (served as `/icon.svg`)
@@ -154,8 +158,8 @@ to bloat the `subscribers` table (see `app/api/subscribe/route.ts` and `lib/rate
   stages (`groups-stage`, `thirds-stage`, `knockout-stage`), `nav`, `live-banner`, `subscribe-dialog`, the
   pre-mount `predictor-skeleton`, and the `ad-slot` wrapper for Adsterra units (the shared
   `use-live-scores` poller lives at `components/use-live-scores.ts`)
-- `components/ui/` — shadcn/ui primitives, structural wrappers over the bespoke CSS (badge, button, card,
-  dialog, input, tabs, sonner toaster, skeleton)
+- `components/ui/` — shadcn/ui primitives, structural wrappers over the bespoke CSS (accordion, badge,
+  button, card, dialog, input, tabs, sonner toaster, skeleton)
 - `lib/bracket.ts` — tournament types + pure bracket logic (resolve/validate); re-exports `lib/annex.ts`
   (the Annex C seeding table) and `lib/teams.ts` (team data + indexes)
 - `lib/faq.ts` — FAQ copy shared by the visible FAQ section and the `FAQPage` JSON-LD, so the

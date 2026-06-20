@@ -50,7 +50,11 @@ There are no automated tests; verify changes by running `npm run build` (type ch
 - **`app/page.tsx`** — server component: static hero/footer, mounts `<Predictor />` from
   `@/components/predictor/predictor`, and renders an `<AdSlot />` (native banner) above the footer.
   Between the data note and the ad it renders two static, crawlable sections — the 12-group/48-team
-  summary (from `TEAMS`/`GROUPS` via `@/lib/bracket`) and the FAQ (from `lib/faq.ts`). These are
+  summary (from `TEAMS`/`GROUPS` via `@/lib/bracket`) and the FAQ. The FAQ is
+  **`components/faq.tsx`** (client): a shadcn/Radix single-open accordion over `lib/faq.ts`, mounted
+  under a server-rendered `#faq` heading. Its answers are **force-mounted and collapsed purely with
+  CSS** (see `components/ui/accordion.tsx`), so every answer ships in the server HTML — crawlable and
+  in sync with the FAQPage JSON-LD — even while a panel is visually collapsed. These two sections are
   the page's indexable copy: the predictor itself is client-only (the server renders only its
   skeleton). Styled by `app/styles/seo.css`. Between them sits the `#fixture` section: a
   server-rendered heading plus **`components/fixture-list.tsx`** (client), the full tournament
@@ -163,14 +167,16 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   `false` when the email already exists (the route turns `false` into a 409). It lazily runs
   `CREATE TABLE IF NOT EXISTS` on first call, so a fresh DB needs no migration. Reads `POSTGRES_URL`
   from the env via `@vercel/postgres`.
-- **`components/ui/`** — shadcn/ui primitives (badge, button, card, dialog, input, tabs, sonner,
-  skeleton).
+- **`components/ui/`** — shadcn/ui primitives (accordion, badge, button, card, dialog, input, tabs,
+  sonner, skeleton).
   These wrappers are **structural only**: they delegate all visuals to the bespoke classes in
   `globals.css` rather than imposing shadcn's default Tailwind skin, so the liquid-glass look and
   both themes survive. `button`/`badge` use `cva` to map a `variant` to an existing class
   (`.btn`/`.mag`/`.ghost`/`.clr`; `.pill`/`.lc-badge`/`.lc-grp`/`.livehd-pill`); `card`/`input`/`tabs`
   just forward `className`, and `skeleton` prepends the `.skel` shimmer class (sized per instance via
-  `className`/`style`). Prefer these primitives for new/changed UI — add a new one here when none
+  `className`/`style`). `accordion` (FAQ) likewise forwards `className`, but `AccordionContent` is
+  `forceMount`ed so its copy stays in the server HTML and is collapsed by CSS — see
+  `app/styles/seo.css` `.seo-faq*` — not unmounted by Radix. Prefer these primitives for new/changed UI — add a new one here when none
   fits, following the same delegate-to-CSS convention. `lib/utils.ts` holds the `cn()` helper (clsx +
   tailwind-merge); component config lives in `components.json`.
 - **`lib/site.ts`** — resolves the canonical `SITE_URL` once (env: `NEXT_PUBLIC_SITE_URL` →

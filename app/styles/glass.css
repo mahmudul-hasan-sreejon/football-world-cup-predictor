@@ -33,6 +33,7 @@
 .tab,
 .pill,
 .seo-group,
+.seo-faq-item,
 .fx-row {
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
@@ -43,6 +44,7 @@
 .thirdsbar,
 .lock,
 .seo-group,
+.seo-faq-item,
 .fx-row {
   background: var(--glass-tint);
   border-color: var(--glass-edge);

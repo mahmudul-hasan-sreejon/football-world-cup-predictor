@@ -1,7 +1,8 @@
-// FAQ copy shared by the visible FAQ section (app/page.tsx) and the FAQPage
-// JSON-LD in app/layout.tsx. Google requires marked-up FAQ content to be
-// visible on the page, so both must render the same entries — sourcing them
-// from this single list keeps them in sync by construction.
+// FAQ copy shared by the visible FAQ accordion (components/faq.tsx) and the
+// FAQPage JSON-LD in app/layout.tsx. Google requires marked-up FAQ content to
+// be visible on the page, so both must render the same entries — sourcing them
+// from this single list keeps them in sync by construction. (The accordion
+// force-mounts its answers so the copy ships in the server HTML even collapsed.)
 export const FAQS: ReadonlyArray<{ q: string; a: string }> = [
   {
     q: "How does the World Cup 2026 bracket predictor work?",

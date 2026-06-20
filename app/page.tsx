@@ -1,4 +1,5 @@
 import Predictor from "@/components/predictor/predictor";
+import { Faq } from "@/components/faq";
 import { FixtureList } from "@/components/fixture-list";
 import { AdSlot } from "@/components/predictor/ad-slot";
 import {
@@ -8,7 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { GROUPS, TEAMS } from "@/lib/bracket";
-import { FAQS } from "@/lib/faq";
 
 export default function Home() {
   return (
@@ -90,14 +90,7 @@ export default function Home() {
         <h2 id="faq-title" className="sec-title">
           Frequently Asked Questions
         </h2>
-        <div className="seo-faq">
-          {FAQS.map(({ q, a }) => (
-            <div className="seo-faq-item" key={q}>
-              <h3>{q}</h3>
-              <p>{a}</p>
-            </div>
-          ))}
-        </div>
+        <Faq />
       </section>
 
       <AdSlot
