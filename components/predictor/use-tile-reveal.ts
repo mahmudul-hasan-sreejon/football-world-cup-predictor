@@ -20,7 +20,11 @@ export function useTileReveal() {
     }
 
     function onMove(e: PointerEvent) {
-      const card = (e.target as Element | null)?.closest<HTMLElement>(".reveal");
+      const target = e.target;
+      // `e.target` isn't always an Element (text nodes, document, window), so
+      // guard at runtime before reaching for `closest`.
+      if (!(target instanceof Element)) return;
+      const card = target.closest<HTMLElement>(".reveal");
       if (!card) return;
       const r = card.getBoundingClientRect();
       pending = { el: card, x: e.clientX - r.left, y: e.clientY - r.top };

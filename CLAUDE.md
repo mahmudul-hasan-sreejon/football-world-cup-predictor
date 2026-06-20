@@ -44,7 +44,9 @@ There are no automated tests; verify changes by running `npm run build` (type ch
   - `use-tile-reveal.ts` — the Windows-tile/Fluent "reveal" hover: a soft light tracks the cursor
     along a card's border. The container calls it once; it attaches a single delegated `document`
     `pointermove` listener (rAF-coalesced) that writes the cursor position into `--mx`/`--my` on the
-    hovered card, and `app/styles/reveal.css` paints the border glow. Cards opt in app-wide by adding
+    hovered card, and `app/styles/reveal.css` paints the border glow. The listener guards `e.target`
+    with an `instanceof Element` check before calling `closest` (the event target can be a non-Element
+    node such as a text node, `document`, or `window`). Cards opt in app-wide by adding
     the `.reveal` class — the predictor stage cards plus the groups summary (`.seo-group`), fixtures
     (`.fx-row`), and FAQ (`.seo-faq-item`) — and the one listener covers them all.
   - `ad-slot.tsx` — a reusable `<AdSlot id src>` for a single Adsterra ad unit (e.g. a Native
